@@ -1,0 +1,5 @@
+name: "MiniConnect"
+version: "${version}"
+author: "Lenni0451"
+main: "net.lenni0451.miniconnect.Main"
+min-version: "3.3.6"

@@ -1,7 +1,13 @@
 package net.lenni0451.miniconnect.server.states.play.screen.impl;
 
 import com.google.common.net.HostAndPort;
+import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.platform.PlatformTask;
+import net.lenni0451.mcstructs.core.TextFormatting;
+import net.lenni0451.mcstructs.text.ATextComponent;
 import net.lenni0451.mcstructs.text.components.StringComponent;
+import net.lenni0451.mcstructs.text.events.click.ClickEvent;
+import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.model.PlayerConfig;
@@ -12,8 +18,13 @@ import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
+import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
 import net.raphimc.viaproxy.util.AddressUtil;
+
+import java.util.concurrent.TimeoutException;
 
 import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.item;
 
@@ -28,6 +39,7 @@ public class MainScreen extends Screen {
         PlayerConfig playerConfig = screenHandler.getStateHandler().getHandler().getPlayerConfig();
         boolean hasAddress = playerConfig.serverAddress != null;
         boolean hasVersion = playerConfig.targetVersion != null;
+        boolean hasAccount = playerConfig.account != null;
 
         itemList.set(10, item(Items.NAMETAG).named(new StringComponent("§aSet server address")).setGlint(hasAddress).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to set the server address to connect to"));
@@ -63,9 +75,38 @@ public class MainScreen extends Screen {
         }).get(), () -> {
             screenHandler.openScreen(new VersionSelectorScreen(0));
         });
-//        itemList.set(12, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).get(), () -> {
-//            //TODO
-//        });
+        itemList.set(12, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).setGlint(hasAccount).calculate(builder -> {
+            builder.lore(new StringComponent("§bClick to login with your Microsoft account"));
+            if (hasAccount) {
+                builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
+            } else {
+                builder.lore(new StringComponent("§cNot logged in"));
+            }
+        }).get(), () -> {
+            screenHandler.getStateHandler().send(new S2CContainerClosePacket(1));
+            screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aLoading, please wait..."), false));
+            PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
+                try {
+                    playerConfig.account = new MicrosoftAccount(MicrosoftAccount.DEVICE_CODE_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepMsaDeviceCode.MsaDeviceCodeCallback(code -> {
+                        ATextComponent component = new StringComponent("Please open your browser and visit ").modifyStyle(style -> style.setFormatting(TextFormatting.YELLOW));
+                        component.append(new StringComponent(code.getDirectVerificationUri()).modifyStyle(style -> style.setFormatting(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEventAction.OPEN_URL, code.getDirectVerificationUri()))));
+                        component.append(new StringComponent(" and login with your Microsoft account"));
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§bIf the code is not inserted automatically, please enter the code: §a" + code.getUserCode()), false));
+                    })));
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aSuccessfully logged in"), false));
+                } catch (InterruptedException e) {
+                    return;
+                } catch (Throwable t) {
+                    if (!(t instanceof TimeoutException)) {
+                        t.printStackTrace();
+                    }
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cLogin failed: " + t.getMessage()), false));
+                }
+                screenHandler.openScreen(this);
+            });
+            screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
+        });
 //        itemList.set(13, item(Items.LEVER).named(new StringComponent("§aSettings")).get(), () -> {
 //            //TODO
 //        });
@@ -79,10 +120,11 @@ public class MainScreen extends Screen {
             }
             builder.lore(new StringComponent("§aAddress: §6" + playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
             builder.lore(new StringComponent("§aVersion: §6" + playerConfig.targetVersion.getName()));
+            if (hasAccount) builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
         }).get(), () -> {
             if (hasAddress && hasVersion) {
                 int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;
-                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion));
+                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion, playerConfig.account));
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));

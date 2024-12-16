@@ -1,6 +1,9 @@
 package net.lenni0451.miniconnect.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import net.raphimc.viaproxy.saves.impl.accounts.Account;
 
-public record ConnectionInfo(String host, int port, ProtocolVersion protocolVersion) {
+import javax.annotation.Nullable;
+
+public record ConnectionInfo(String host, int port, ProtocolVersion protocolVersion, @Nullable Account account) {
 }

@@ -2,15 +2,23 @@ package net.lenni0451.miniconnect;
 
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
 import net.lenni0451.miniconnect.server.LobbyServerInitializer;
+import net.raphimc.netminecraft.constants.IntendedState;
+import net.raphimc.netminecraft.constants.MCPipeline;
 import net.raphimc.netminecraft.netty.connection.NetServer;
+import net.raphimc.netminecraft.packet.Packet;
+import net.raphimc.netminecraft.packet.impl.handshaking.C2SHandshakingClientIntentionPacket;
 import net.raphimc.viaproxy.ViaProxy;
 import net.raphimc.viaproxy.plugins.ViaProxyPlugin;
+import net.raphimc.viaproxy.plugins.events.Client2ProxyChannelInitializeEvent;
 import net.raphimc.viaproxy.plugins.events.PreConnectEvent;
+import net.raphimc.viaproxy.plugins.events.types.ITyped;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,6 +50,23 @@ public class Main extends ViaProxyPlugin {
         ViaProxy.EVENT_MANAGER.register(this);
         this.lobbyServer = new NetServer(LobbyServerHandler::new, LobbyServerInitializer::new);
         this.lobbyServer.bind(new InetSocketAddress("localhost", 0), false);
+    }
+
+    @EventHandler
+    public void onClient2ProxyChannelInitialize(Client2ProxyChannelInitializeEvent event) {
+        if (!event.getType().equals(ITyped.Type.POST)) return;
+        //TODO: Remove this when the ViaVersion bug is fixed
+        event.getChannel().pipeline().addBefore(MCPipeline.HANDLER_HANDLER_NAME, "via-bugfix", new SimpleChannelInboundHandler<Packet>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) throws Exception {
+                if (packet instanceof C2SHandshakingClientIntentionPacket clientIntention) {
+                    if (clientIntention.intendedState.equals(IntendedState.TRANSFER)) {
+                        clientIntention.intendedState = IntendedState.LOGIN;
+                    }
+                }
+                channelHandlerContext.fireChannelRead(packet);
+            }
+        });
     }
 
     @EventHandler

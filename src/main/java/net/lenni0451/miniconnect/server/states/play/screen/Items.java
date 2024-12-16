@@ -12,5 +12,7 @@ public class Items {
     public static final String FURNACE = "furnace";
     public static final String DIRT = "dirt";
     public static final String GRAY_STAINED_GLASS_PANE = "gray_stained_glass_pane";
+    public static final String TRIAL_KEY = "trial_key";
+    public static final String LEVER = "lever";
 
 }

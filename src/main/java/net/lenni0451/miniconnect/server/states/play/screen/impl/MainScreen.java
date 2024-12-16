@@ -12,6 +12,7 @@ import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
+import net.raphimc.viaproxy.util.AddressUtil;
 
 import java.net.InetSocketAddress;
 
@@ -35,8 +36,9 @@ public class MainScreen extends Screen {
             playerConfig.chatListener = s -> {
                 try {
                     HostAndPort hostAndPort = HostAndPort.fromString(s);
+                    if (hostAndPort.getHost().isBlank()) throw new IllegalStateException();
                     playerConfig.serverAddress = hostAndPort.getHost();
-                    playerConfig.serverPort = hostAndPort.getPortOrDefault(25565); //TODO: Get the default port from the protocol?
+                    playerConfig.serverPort = hostAndPort.getPortOrDefault(AddressUtil.getDefaultPort(playerConfig.targetVersion));
                 } catch (Throwable t) {
                     screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
                 }

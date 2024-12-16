@@ -14,6 +14,8 @@ public class PlayerConfig {
     @Nullable
     public ProtocolVersion targetVersion;
 
+    public transient String handshakeAddress;
+    public transient int handshakePort;
     public transient Consumer<String> chatListener;
 
     public boolean allowCloseScreen() {

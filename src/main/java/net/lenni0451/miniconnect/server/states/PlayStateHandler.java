@@ -8,7 +8,6 @@ import net.lenni0451.miniconnect.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SChatPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.*;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
-import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.lenni0451.miniconnect.server.states.play.screen.impl.MainScreen;
 import net.raphimc.viabedrock.protocol.data.enums.java.GameEventType;
@@ -18,17 +17,12 @@ import java.util.function.Consumer;
 
 public class PlayStateHandler extends StateHandler {
 
-    private final PlayerConfig playerConfig = new PlayerConfig(); //TODO: Maybe save/load this?
     private ScreenHandler screenHandler;
 
     public PlayStateHandler(final LobbyServerHandler handler, final Channel channel) {
         super(handler, channel);
 
         this.init();
-    }
-
-    public PlayerConfig getPlayerConfig() {
-        return this.playerConfig;
     }
 
     private void init() {
@@ -59,9 +53,9 @@ public class PlayStateHandler extends StateHandler {
 
     @EventHandler
     public void handle(final C2SChatPacket packet) {
-        if (this.playerConfig.chatListener != null) {
-            Consumer<String> listener = this.playerConfig.chatListener;
-            this.playerConfig.chatListener = null;
+        if (this.handler.getPlayerConfig().chatListener != null) {
+            Consumer<String> listener = this.handler.getPlayerConfig().chatListener;
+            this.handler.getPlayerConfig().chatListener = null;
             listener.accept(packet.message);
         }
     }

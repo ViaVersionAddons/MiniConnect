@@ -27,6 +27,10 @@ public class StateHandler {
         this.handlerManager.register(this);
     }
 
+    public LobbyServerHandler getHandler() {
+        return this.handler;
+    }
+
     public Channel getChannel() {
         return this.channel;
     }

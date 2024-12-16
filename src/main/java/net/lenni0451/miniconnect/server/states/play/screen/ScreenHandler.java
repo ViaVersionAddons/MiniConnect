@@ -6,19 +6,19 @@ import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClickPack
 import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClosePacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerSetContentPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2COpenScreenPacket;
-import net.lenni0451.miniconnect.server.states.PlayStateHandler;
+import net.lenni0451.miniconnect.server.states.StateHandler;
 
 public class ScreenHandler {
 
-    private final PlayStateHandler stateHandler;
+    private final StateHandler stateHandler;
     private Screen currentScreen;
     private ItemList currentItemList;
 
-    public ScreenHandler(final PlayStateHandler stateHandler) {
+    public ScreenHandler(final StateHandler stateHandler) {
         this.stateHandler = stateHandler;
     }
 
-    public PlayStateHandler getStateHandler() {
+    public StateHandler getStateHandler() {
         return this.stateHandler;
     }
 

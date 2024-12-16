@@ -25,7 +25,7 @@ public class MainScreen extends Screen {
 
     @Override
     public void init(ScreenHandler screenHandler, ItemList itemList) {
-        PlayerConfig playerConfig = screenHandler.getStateHandler().getPlayerConfig();
+        PlayerConfig playerConfig = screenHandler.getStateHandler().getHandler().getPlayerConfig();
         boolean hasAddress = playerConfig.serverAddress != null;
         boolean hasVersion = playerConfig.targetVersion != null;
 
@@ -49,7 +49,7 @@ public class MainScreen extends Screen {
         itemList.set(16, item(Items.OAK_DOOR).named(new StringComponent("§a§lConnect to server")).setGlint(hasAddress && hasVersion).get(), () -> {
             if (hasAddress && hasVersion) {
                 Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new InetSocketAddress(playerConfig.serverAddress, playerConfig.serverPort));
-                screenHandler.getStateHandler().send(new S2CTransferPacket("127.0.0.1", 25565)); //TODO: Get the ViaProxy address and port
+                screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));
             }
@@ -62,7 +62,7 @@ public class MainScreen extends Screen {
     @Override
     public void close(ScreenHandler screenHandler) {
         //Count closing the screen as a disconnect
-        if (!screenHandler.getStateHandler().getPlayerConfig().allowCloseScreen()) {
+        if (!screenHandler.getStateHandler().getHandler().getPlayerConfig().allowCloseScreen()) {
             screenHandler.getStateHandler().send(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
         }
     }

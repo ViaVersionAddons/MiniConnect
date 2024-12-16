@@ -7,6 +7,7 @@ import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.raphimc.viabedrock.api.BedrockProtocolVersion;
 import net.raphimc.vialegacy.api.LegacyProtocolVersion;
 
 import java.util.ArrayList;
@@ -26,14 +27,14 @@ public class VersionSelectorScreen extends Screen {
 
     @Override
     public void init(ScreenHandler screenHandler, ItemList itemList) {
-        PlayerConfig playerConfig = screenHandler.getStateHandler().getPlayerConfig();
+        PlayerConfig playerConfig = screenHandler.getStateHandler().getHandler().getPlayerConfig();
 
         List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols());
         Collections.reverse(versions);
         versions = versions.subList(this.page * 45, Math.min(versions.size(), (this.page + 1) * 45));
         for (ProtocolVersion version : versions) {
             String item;
-            if (false/*TODO: Bedrock check*/) {
+            if (version == BedrockProtocolVersion.bedrockLatest) {
                 item = Items.BEDROCK;
             } else if (version.newerThanOrEqualTo(LegacyProtocolVersion.r1_0_0tor1_0_1)) {
                 item = Items.CRAFTING_TABLE;

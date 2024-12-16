@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.ScheduledFuture;
 import net.lenni0451.miniconnect.server.states.*;
+import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
 
@@ -12,8 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
 
+    private final PlayerConfig playerConfig = new PlayerConfig(); //TODO: Maybe save/load this
     private StateHandler handler;
     private ScheduledFuture<?> tickTask;
+
+    public PlayerConfig getPlayerConfig() {
+        return this.playerConfig;
+    }
 
     public void update(final Channel channel, final ConnectionState state) {
         this.handler = switch (state) {

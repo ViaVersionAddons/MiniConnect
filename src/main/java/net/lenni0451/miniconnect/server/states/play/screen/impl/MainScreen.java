@@ -50,12 +50,12 @@ public class MainScreen extends Screen {
         itemList.set(11, item(Items.WRITABLE_BOOK).named(new StringComponent("§aSet protocol version")).setGlint(hasVersion).get(), () -> {
             screenHandler.openScreen(new VersionSelectorScreen(0));
         });
-        itemList.set(12, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).get(), () -> {
-            //TODO
-        });
-        itemList.set(13, item(Items.LEVER).named(new StringComponent("§aSettings")).get(), () -> {
-            //TODO
-        });
+//        itemList.set(12, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).get(), () -> {
+//            //TODO
+//        });
+//        itemList.set(13, item(Items.LEVER).named(new StringComponent("§aSettings")).get(), () -> {
+//            //TODO
+//        });
         itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent("§a§lConnect to server")).setGlint(hasAddress && hasVersion).get(), () -> {
             if (hasAddress && hasVersion) {
                 int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;

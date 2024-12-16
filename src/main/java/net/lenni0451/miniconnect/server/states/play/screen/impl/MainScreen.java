@@ -38,7 +38,7 @@ public class MainScreen extends Screen {
                     HostAndPort hostAndPort = HostAndPort.fromString(s);
                     if (hostAndPort.getHost().isBlank()) throw new IllegalStateException();
                     playerConfig.serverAddress = hostAndPort.getHost();
-                    playerConfig.serverPort = hostAndPort.getPortOrDefault(AddressUtil.getDefaultPort(playerConfig.targetVersion));
+                    playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
                 } catch (Throwable t) {
                     screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
                 }
@@ -50,7 +50,8 @@ public class MainScreen extends Screen {
         });
         itemList.set(16, item(Items.OAK_DOOR).named(new StringComponent("§a§lConnect to server")).setGlint(hasAddress && hasVersion).get(), () -> {
             if (hasAddress && hasVersion) {
-                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new InetSocketAddress(playerConfig.serverAddress, playerConfig.serverPort));
+                int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;
+                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new InetSocketAddress(playerConfig.serverAddress, serverPort));
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));

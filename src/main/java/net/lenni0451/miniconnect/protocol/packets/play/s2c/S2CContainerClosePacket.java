@@ -1,16 +1,16 @@
-package net.lenni0451.miniconnect.protocol.packets.play;
+package net.lenni0451.miniconnect.protocol.packets.play.s2c;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.raphimc.netminecraft.packet.Packet;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class S2CGameEventPacket implements Packet {
+public class S2CContainerClosePacket implements Packet {
 
-    public int event;
-    public float value;
+    public int id;
 
     @Override
     public void read(ByteBuf byteBuf, int protocolVersion) {
@@ -19,8 +19,7 @@ public class S2CGameEventPacket implements Packet {
 
     @Override
     public void write(ByteBuf byteBuf, int protocolVersion) {
-        byteBuf.writeByte(this.event);
-        byteBuf.writeFloat(this.value);
+        PacketTypes.writeVarInt(byteBuf, this.id);
     }
 
 }

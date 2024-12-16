@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play;
+package net.lenni0451.miniconnect.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.GlobalBlockPosition;
 import com.viaversion.viaversion.api.type.Types;

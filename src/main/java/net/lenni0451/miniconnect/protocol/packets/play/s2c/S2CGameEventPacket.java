@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play;
+package net.lenni0451.miniconnect.protocol.packets.play.s2c;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -7,9 +7,10 @@ import net.raphimc.netminecraft.packet.Packet;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class S2CKeepAlivePacket implements Packet {
+public class S2CGameEventPacket implements Packet {
 
-    public long id;
+    public int event;
+    public float value;
 
     @Override
     public void read(ByteBuf byteBuf, int protocolVersion) {
@@ -18,7 +19,8 @@ public class S2CKeepAlivePacket implements Packet {
 
     @Override
     public void write(ByteBuf byteBuf, int protocolVersion) {
-        byteBuf.writeLong(this.id);
+        byteBuf.writeByte(this.event);
+        byteBuf.writeFloat(this.value);
     }
 
 }

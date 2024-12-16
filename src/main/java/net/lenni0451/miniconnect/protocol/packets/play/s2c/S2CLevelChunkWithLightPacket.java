@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play;
+package net.lenni0451.miniconnect.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.chunks.Chunk;
 import com.viaversion.viaversion.api.type.Type;

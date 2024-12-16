@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play;
+package net.lenni0451.miniconnect.protocol.packets.play.c2s;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;

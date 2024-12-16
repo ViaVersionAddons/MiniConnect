@@ -2,6 +2,7 @@ package net.lenni0451.miniconnect.server.states;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import net.lenni0451.lambdaevents.IExceptionHandler;
 import net.lenni0451.lambdaevents.LambdaManager;
 import net.lenni0451.lambdaevents.generator.LambdaMetaFactoryGenerator;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
@@ -15,24 +16,25 @@ public class StateHandler {
 
     protected final LobbyServerHandler handler;
     protected final Channel channel;
-    private final LambdaManager lambdaManager;
+    protected final LambdaManager handlerManager;
 
     public StateHandler(final LobbyServerHandler handler, final Channel channel) {
         this.handler = handler;
         this.channel = channel;
-        this.lambdaManager = LambdaManager.basic(new LambdaMetaFactoryGenerator(MethodHandles.lookup()));
+        this.handlerManager = LambdaManager.basic(new LambdaMetaFactoryGenerator(MethodHandles.lookup()));
 
-        this.lambdaManager.register(this);
+        this.handlerManager.setExceptionHandler(IExceptionHandler.throwing());
+        this.handlerManager.register(this);
     }
 
     public void tick() {
     }
 
     public final void handle(final Packet packet) {
-        this.lambdaManager.call(packet);
+        this.handlerManager.call(packet);
     }
 
-    protected final void send(final Packet packet) {
+    public final void send(final Packet packet) {
         this.channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 

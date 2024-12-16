@@ -3,14 +3,19 @@ package net.lenni0451.miniconnect.server.states;
 import com.viaversion.nbt.tag.CompoundTag;
 import com.viaversion.viaversion.api.minecraft.chunks.*;
 import io.netty.channel.Channel;
+import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.protocol.packets.play.*;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
+import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.lenni0451.miniconnect.server.states.play.screen.impl.MainScreen;
 import net.raphimc.viabedrock.protocol.data.enums.java.GameEventType;
 
 import java.util.ArrayList;
 
 public class PlayStateHandler extends StateHandler {
+
+    private ScreenHandler screenHandler;
 
     public PlayStateHandler(final LobbyServerHandler handler, final Channel channel) {
         super(handler, channel);
@@ -33,11 +38,23 @@ public class PlayStateHandler extends StateHandler {
             this.send(new S2CLevelChunkWithLightPacket(chunk));
         }
         this.send(new S2CPlayerPositionPacket(0, 24, 1, 24, 0, 0, 0, 0, 0, 0));
+        this.openScreen();
+    }
+
+    private void openScreen() {
+        this.screenHandler = new ScreenHandler(this);
+        this.handlerManager.register(this.screenHandler);
+        this.screenHandler.openScreen(new MainScreen());
     }
 
     @Override
     public void tick() {
         this.send(new S2CKeepAlivePacket(0));
+    }
+
+    @EventHandler
+    public void handle(final C2SChatPacket packet) {
+        System.out.println("Received: " + packet.message);
     }
 
 }

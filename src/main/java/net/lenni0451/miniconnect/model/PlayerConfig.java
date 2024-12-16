@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.server.states.play;
+package net.lenni0451.miniconnect.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 

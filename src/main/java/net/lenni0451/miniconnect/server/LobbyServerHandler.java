@@ -4,8 +4,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.ScheduledFuture;
+import net.lenni0451.miniconnect.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.*;
-import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
 

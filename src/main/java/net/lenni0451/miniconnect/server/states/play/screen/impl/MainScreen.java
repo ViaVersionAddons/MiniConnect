@@ -3,18 +3,17 @@ package net.lenni0451.miniconnect.server.states.play.screen.impl;
 import com.google.common.net.HostAndPort;
 import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.miniconnect.Main;
+import net.lenni0451.miniconnect.model.ConnectionInfo;
+import net.lenni0451.miniconnect.model.PlayerConfig;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerClosePacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CSystemChatPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CTransferPacket;
-import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
 import net.raphimc.viaproxy.util.AddressUtil;
-
-import java.net.InetSocketAddress;
 
 import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.item;
 
@@ -83,7 +82,7 @@ public class MainScreen extends Screen {
         }).get(), () -> {
             if (hasAddress && hasVersion) {
                 int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;
-                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new InetSocketAddress(playerConfig.serverAddress, serverPort));
+                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion));
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));

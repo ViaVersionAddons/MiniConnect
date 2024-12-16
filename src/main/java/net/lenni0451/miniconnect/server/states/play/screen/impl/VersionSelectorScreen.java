@@ -2,7 +2,7 @@ package net.lenni0451.miniconnect.server.states.play.screen.impl;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.mcstructs.text.components.StringComponent;
-import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
+import net.lenni0451.miniconnect.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;

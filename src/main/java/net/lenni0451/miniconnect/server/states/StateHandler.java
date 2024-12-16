@@ -46,6 +46,16 @@ public class StateHandler {
         this.channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 
+    public final void sendAndClose(final Packet packet) {
+        this.channel.writeAndFlush(packet).addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                future.channel().close();
+            } else {
+                future.channel().pipeline().fireExceptionCaught(future.cause());
+            }
+        });
+    }
+
     protected final void setState(final ConnectionState state) {
         this.channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().setConnectionState(state);
         this.handler.update(this.channel, state);

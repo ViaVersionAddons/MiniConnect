@@ -66,7 +66,7 @@ public class MainScreen extends Screen {
             }
         });
         itemList.set(26, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
-            screenHandler.getStateHandler().send(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
+            screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
         });
     }
 
@@ -74,7 +74,7 @@ public class MainScreen extends Screen {
     public void close(ScreenHandler screenHandler) {
         //Count closing the screen as a disconnect
         if (!screenHandler.getStateHandler().getHandler().getPlayerConfig().allowCloseScreen()) {
-            screenHandler.getStateHandler().send(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
+            screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
         }
     }
 

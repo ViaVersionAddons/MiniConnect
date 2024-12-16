@@ -11,7 +11,6 @@ import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.model.PlayerConfig;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerClosePacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CSystemChatPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CTransferPacket;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
@@ -49,7 +48,7 @@ public class MainScreen extends Screen {
                 builder.lore(new StringComponent("§cNo address set (required)"));
             }
         }).get(), () -> {
-            screenHandler.getStateHandler().send(new S2CContainerClosePacket(1));
+            screenHandler.closeScreen();
             screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aPlease enter the server ip into the chat (with optional port) (e.g. example.com, example.com:25565"), false));
             playerConfig.chatListener = s -> {
                 try {
@@ -83,7 +82,7 @@ public class MainScreen extends Screen {
                 builder.lore(new StringComponent("§cNot logged in"));
             }
         }).get(), () -> {
-            screenHandler.getStateHandler().send(new S2CContainerClosePacket(1));
+            screenHandler.closeScreen();
             screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aLoading, please wait..."), false));
             PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
                 try {
@@ -138,9 +137,7 @@ public class MainScreen extends Screen {
     @Override
     public void close(ScreenHandler screenHandler) {
         //Count closing the screen as a disconnect
-        if (!screenHandler.getStateHandler().getHandler().getPlayerConfig().allowCloseScreen()) {
-            screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
-        }
+        screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
     }
 
 }

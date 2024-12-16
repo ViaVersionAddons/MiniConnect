@@ -4,6 +4,7 @@ import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
 import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClickPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClosePacket;
+import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerClosePacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerSetContentPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2COpenScreenPacket;
 import net.lenni0451.miniconnect.server.states.StateHandler;
@@ -28,6 +29,11 @@ public class ScreenHandler {
         this.stateHandler.send(new S2COpenScreenPacket(1, screen.getRows() - 1, screen.getTitle()));
         this.stateHandler.send(new S2CContainerSetContentPacket(1, 0, this.currentItemList.getItems(), StructuredItem.empty()));
         this.currentScreen = screen;
+    }
+
+    public void closeScreen() {
+        this.currentScreen = null;
+        this.stateHandler.send(new S2CContainerClosePacket(1));
     }
 
     @EventHandler

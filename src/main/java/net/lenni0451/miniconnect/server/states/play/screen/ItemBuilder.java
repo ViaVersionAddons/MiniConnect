@@ -1,5 +1,6 @@
 package net.lenni0451.miniconnect.server.states.play.screen;
 
+import com.viaversion.nbt.tag.Tag;
 import com.viaversion.viabackwards.protocol.v1_21_4to1_21_2.Protocol1_21_4To1_21_2;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.minecraft.data.StructuredDataKey;
@@ -8,6 +9,11 @@ import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
 import net.lenni0451.mcstructs.text.ATextComponent;
 import net.lenni0451.miniconnect.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ViaUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemBuilder {
 
@@ -18,6 +24,7 @@ public class ItemBuilder {
 
     private final String id;
     private ATextComponent name;
+    private final List<ATextComponent> lore = new ArrayList<>();
     private boolean glint = false;
 
     private ItemBuilder(final String id) {
@@ -29,8 +36,18 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder lore(final ATextComponent... lore) {
+        Collections.addAll(this.lore, lore);
+        return this;
+    }
+
     public ItemBuilder setGlint(final boolean state) {
         this.glint = state;
+        return this;
+    }
+
+    public ItemBuilder calculate(final Consumer<ItemBuilder> consumer) {
+        consumer.accept(this);
         return this;
     }
 
@@ -41,6 +58,13 @@ public class ItemBuilder {
         item.dataContainer().setIdLookup(Via.getManager().getProtocolManager().getProtocol(Protocol1_21_4To1_21_2.class), false);
         if (this.name != null) {
             item.dataContainer().set(StructuredDataKey.CUSTOM_NAME, ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(this.name)));
+        }
+        if (!this.lore.isEmpty()) {
+            Tag[] lore = new Tag[this.lore.size()];
+            for (int i = 0; i < this.lore.size(); i++) {
+                lore[i] = ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(this.lore.get(i)));
+            }
+            item.dataContainer().set(StructuredDataKey.LORE, lore);
         }
         if (this.glint) {
             item.dataContainer().set(StructuredDataKey.ENCHANTMENT_GLINT_OVERRIDE, true);

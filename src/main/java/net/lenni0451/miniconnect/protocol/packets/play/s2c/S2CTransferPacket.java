@@ -1,9 +1,13 @@
 package net.lenni0451.miniconnect.protocol.packets.play.s2c;
 
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class S2CTransferPacket implements Packet {
 
     public String host;

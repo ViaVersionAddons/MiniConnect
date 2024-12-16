@@ -18,8 +18,23 @@ import java.util.concurrent.TimeUnit;
 
 public class Main extends ViaProxyPlugin {
 
+    private static Main instance;
+
+    public static Main getInstance() {
+        return instance;
+    }
+
+
     private final Map<InetAddress, InetSocketAddress> connectionTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, InetSocketAddress>build().asMap();
     private NetServer lobbyServer;
+
+    public Main() {
+        instance = this;
+    }
+
+    public void registerReconnect(final Channel channel, final InetSocketAddress target) {
+        this.connectionTargets.put(this.getChannelAddress(channel), target);
+    }
 
     @Override
     public void onEnable() {

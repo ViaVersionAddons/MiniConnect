@@ -27,6 +27,10 @@ public class StateHandler {
         this.handlerManager.register(this);
     }
 
+    public Channel getChannel() {
+        return this.channel;
+    }
+
     public void tick() {
     }
 

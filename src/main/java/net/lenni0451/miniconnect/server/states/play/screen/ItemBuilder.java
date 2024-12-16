@@ -18,6 +18,7 @@ public class ItemBuilder {
 
     private final String id;
     private ATextComponent name;
+    private boolean glint = false;
 
     private ItemBuilder(final String id) {
         this.id = id;
@@ -28,11 +29,21 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setGlint(final boolean state) {
+        this.glint = state;
+        return this;
+    }
+
     public Item get() {
-        StructuredItem item = new StructuredItem(ProtocolConstants.ITEMS.indexOf(this.id), 1);
+        int rawId = ProtocolConstants.ITEMS.indexOf(this.id);
+        if (rawId == -1) throw new IllegalArgumentException("Unknown item id: " + this.id);
+        StructuredItem item = new StructuredItem(rawId, 1);
         item.dataContainer().setIdLookup(Via.getManager().getProtocolManager().getProtocol(Protocol1_21_4To1_21_2.class), false);
         if (this.name != null) {
             item.dataContainer().set(StructuredDataKey.CUSTOM_NAME, ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(this.name)));
+        }
+        if (this.glint) {
+            item.dataContainer().set(StructuredDataKey.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
         return item;
     }

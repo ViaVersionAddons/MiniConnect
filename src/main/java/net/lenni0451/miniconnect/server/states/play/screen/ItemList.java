@@ -23,11 +23,26 @@ public class ItemList {
         return this.listeners;
     }
 
-    public void setItem(final int slot, final Item item) {
-        this.setItem(slot, item, null);
+    public void add(final Item item) {
+        this.add(item, null);
     }
 
-    public void setItem(final int slot, final Item item, @Nullable final ClickListener listener) {
+    public void add(final Item item, @Nullable final ClickListener clickListener) {
+        for (int i = 0; i < this.items.length; i++) {
+            if (this.items[i].isEmpty()) {
+                this.items[i] = item;
+                this.listeners[i] = clickListener;
+                return;
+            }
+        }
+        throw new IllegalStateException("No free slot available");
+    }
+
+    public void set(final int slot, final Item item) {
+        this.set(slot, item, null);
+    }
+
+    public void set(final int slot, final Item item, @Nullable final ClickListener listener) {
         this.items[slot] = item;
         this.listeners[slot] = listener;
     }

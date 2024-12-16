@@ -8,20 +8,27 @@ import net.lenni0451.miniconnect.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SChatPacket;
 import net.lenni0451.miniconnect.protocol.packets.play.s2c.*;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
+import net.lenni0451.miniconnect.server.states.play.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.lenni0451.miniconnect.server.states.play.screen.impl.MainScreen;
 import net.raphimc.viabedrock.protocol.data.enums.java.GameEventType;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class PlayStateHandler extends StateHandler {
 
+    private final PlayerConfig playerConfig = new PlayerConfig(); //TODO: Maybe save/load this?
     private ScreenHandler screenHandler;
 
     public PlayStateHandler(final LobbyServerHandler handler, final Channel channel) {
         super(handler, channel);
 
         this.init();
+    }
+
+    public PlayerConfig getPlayerConfig() {
+        return this.playerConfig;
     }
 
     private void init() {
@@ -39,10 +46,7 @@ public class PlayStateHandler extends StateHandler {
             this.send(new S2CLevelChunkWithLightPacket(chunk));
         }
         this.send(new S2CPlayerPositionPacket(0, 24, 1, 24, 0, 0, 0, 0, 0, 0));
-        this.openScreen();
-    }
 
-    private void openScreen() {
         this.screenHandler = new ScreenHandler(this);
         this.handlerManager.register(this.screenHandler);
         this.screenHandler.openScreen(new MainScreen());
@@ -55,7 +59,11 @@ public class PlayStateHandler extends StateHandler {
 
     @EventHandler
     public void handle(final C2SChatPacket packet) {
-        System.out.println("Received: " + packet.message);
+        if (this.playerConfig.chatListener != null) {
+            Consumer<String> listener = this.playerConfig.chatListener;
+            this.playerConfig.chatListener = null;
+            listener.accept(packet.message);
+        }
     }
 
 }

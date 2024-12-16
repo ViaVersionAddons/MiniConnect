@@ -3,7 +3,7 @@ package net.lenni0451.miniconnect.server.states.play;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PlayerConfig {
 
@@ -16,7 +16,7 @@ public class PlayerConfig {
 
     public transient String handshakeAddress;
     public transient int handshakePort;
-    public transient Consumer<String> chatListener;
+    public transient Function<String, Boolean> chatListener;
 
     public boolean allowCloseScreen() {
         return this.chatListener != null;

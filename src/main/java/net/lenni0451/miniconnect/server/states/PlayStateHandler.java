@@ -13,7 +13,7 @@ import net.lenni0451.miniconnect.server.states.play.screen.impl.MainScreen;
 import net.raphimc.viabedrock.protocol.data.enums.java.GameEventType;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PlayStateHandler extends StateHandler {
 
@@ -54,9 +54,10 @@ public class PlayStateHandler extends StateHandler {
     @EventHandler
     public void handle(final C2SChatPacket packet) {
         if (this.handler.getPlayerConfig().chatListener != null) {
-            Consumer<String> listener = this.handler.getPlayerConfig().chatListener;
-            this.handler.getPlayerConfig().chatListener = null;
-            listener.accept(packet.message);
+            Function<String, Boolean> listener = this.handler.getPlayerConfig().chatListener;
+            if (listener.apply(packet.message)) {
+                this.handler.getPlayerConfig().chatListener = null;
+            }
         }
     }
 

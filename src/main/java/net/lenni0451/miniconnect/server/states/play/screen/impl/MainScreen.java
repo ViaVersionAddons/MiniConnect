@@ -41,8 +41,10 @@ public class MainScreen extends Screen {
                     playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
                 } catch (Throwable t) {
                     screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
+                    return false;
                 }
                 screenHandler.openScreen(this);
+                return true;
             };
         });
         itemList.set(11, item(Items.WRITABLE_BOOK).named(new StringComponent("§aSet protocol version")).setGlint(hasVersion).get(), () -> {

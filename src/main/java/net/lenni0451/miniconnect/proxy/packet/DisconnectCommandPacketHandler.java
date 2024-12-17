@@ -4,11 +4,14 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
+import net.lenni0451.miniconnect.model.AttributeKeys;
+import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 import net.raphimc.netminecraft.packet.UnknownPacket;
+import net.raphimc.netminecraft.packet.impl.play.S2CPlayTransferPacket;
 import net.raphimc.viaproxy.proxy.packethandler.PacketHandler;
 import net.raphimc.viaproxy.proxy.session.ProxyConnection;
 
@@ -46,8 +49,8 @@ public class DisconnectCommandPacketHandler extends PacketHandler {
     }
 
     private void reconnect() {
-        //TODO: Reconnect the player while retaining the properties
-        //The properties should be in the RedirectionHandler#CONNECTION_INFO channel attribute
+        ConnectionInfo connectionInfo = this.proxyConnection.getC2P().attr(AttributeKeys.CONNECTION_INFO).get();
+        this.proxyConnection.getC2P().writeAndFlush(new S2CPlayTransferPacket(connectionInfo.handshakeAddress(), connectionInfo.handshakePort()));
     }
 
 }

@@ -9,7 +9,6 @@ import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.mcstructs.text.events.click.ClickEvent;
 import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
 import net.lenni0451.miniconnect.Main;
-import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CSystemChatPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CTransferPacket;
@@ -22,7 +21,6 @@ import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
 import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
-import net.raphimc.viaproxy.util.AddressUtil;
 
 import java.util.concurrent.TimeoutException;
 
@@ -123,10 +121,9 @@ public class MainScreen extends Screen {
             if (hasAccount) builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
         }).get(), () -> {
             if (hasAddress && hasVersion) {
-                int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;
                 Main.getInstance().getStateRegistry().getConnectionTargets().put(
                         ChannelUtils.getChannelAddress(screenHandler.getStateHandler().getChannel()),
-                        new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion, playerConfig.account)
+                        playerConfig.toConnectionInfo()
                 );
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {

@@ -1,25 +1,26 @@
-package net.lenni0451.miniconnect.protocol.packets.play.c2s;
+package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.raphimc.netminecraft.packet.Packet;
-import net.raphimc.netminecraft.packet.PacketTypes;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class C2SContainerClosePacket implements Packet {
+public class S2CGameEventPacket implements Packet {
 
-    public int id;
+    public int event;
+    public float value;
 
     @Override
     public void read(ByteBuf byteBuf, int protocolVersion) {
-        this.id = PacketTypes.readVarInt(byteBuf);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void write(ByteBuf byteBuf, int protocolVersion) {
-        throw new UnsupportedOperationException();
+        byteBuf.writeByte(this.event);
+        byteBuf.writeFloat(this.value);
     }
 
 }

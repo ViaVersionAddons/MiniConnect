@@ -2,11 +2,11 @@ package net.lenni0451.miniconnect.server.states.play.screen;
 
 import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
 import net.lenni0451.lambdaevents.EventHandler;
-import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClickPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClosePacket;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerClosePacket;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CContainerSetContentPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2COpenScreenPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClickPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClosePacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CContainerClosePacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CContainerSetContentPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2COpenScreenPacket;
 import net.lenni0451.miniconnect.server.states.StateHandler;
 
 public class ScreenHandler {

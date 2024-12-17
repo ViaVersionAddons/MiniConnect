@@ -7,7 +7,7 @@ import com.viaversion.viaversion.api.minecraft.data.StructuredDataKey;
 import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
 import net.lenni0451.mcstructs.text.ATextComponent;
-import net.lenni0451.miniconnect.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ViaUtils;
 
 import java.util.ArrayList;

@@ -10,13 +10,14 @@ import net.lenni0451.mcstructs.text.events.click.ClickEvent;
 import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
-import net.lenni0451.miniconnect.model.PlayerConfig;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CSystemChatPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.S2CTransferPacket;
+import net.lenni0451.miniconnect.server.model.PlayerConfig;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CSystemChatPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CTransferPacket;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
@@ -123,7 +124,10 @@ public class MainScreen extends Screen {
         }).get(), () -> {
             if (hasAddress && hasVersion) {
                 int serverPort = playerConfig.serverPort == null || playerConfig.serverPort == -1 ? AddressUtil.getDefaultPort(playerConfig.targetVersion) : playerConfig.serverPort;
-                Main.getInstance().registerReconnect(screenHandler.getStateHandler().getChannel(), new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion, playerConfig.account));
+                Main.getInstance().getStateRegistry().getConnectionTargets().put(
+                        ChannelUtils.getChannelAddress(screenHandler.getStateHandler().getChannel()),
+                        new ConnectionInfo(playerConfig.serverAddress, serverPort, playerConfig.targetVersion, playerConfig.account)
+                );
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));

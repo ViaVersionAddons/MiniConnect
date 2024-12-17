@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.config;
+package net.lenni0451.miniconnect.server.protocol.packets.config;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;

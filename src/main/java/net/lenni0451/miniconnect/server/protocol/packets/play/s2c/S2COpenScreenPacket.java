@@ -1,10 +1,10 @@
-package net.lenni0451.miniconnect.protocol.packets.play.s2c;
+package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.lenni0451.mcstructs.text.ATextComponent;
-import net.lenni0451.miniconnect.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 

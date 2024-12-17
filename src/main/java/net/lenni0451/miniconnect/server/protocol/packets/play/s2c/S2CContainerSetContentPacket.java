@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play.s2c;
+package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.type.types.version.Types1_21_4;

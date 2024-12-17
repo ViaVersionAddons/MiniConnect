@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.ScheduledFuture;
-import net.lenni0451.miniconnect.model.PlayerConfig;
+import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.*;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
@@ -48,7 +48,7 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
 //        PacketRegistry registry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
 //        int packetId = registry.getPacketId(packet);
-//        MCPackets packetType = MCPackets.getPacket(registry.getConnectionState(), PacketDirection.SERVERBOUND, Main.PROTOCOL_VERSION.getVersion(), packetId);
+//        MCPackets packetType = MCPackets.getPacket(registry.getConnectionState(), PacketDirection.SERVERBOUND, ProtocolConstants.PROTOCOL_VERSION.getVersion(), packetId);
 //        System.out.println(packetType);
         this.handler.handle(packet);
     }

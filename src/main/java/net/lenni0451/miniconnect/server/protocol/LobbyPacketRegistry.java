@@ -1,11 +1,11 @@
-package net.lenni0451.miniconnect.protocol;
+package net.lenni0451.miniconnect.server.protocol;
 
-import net.lenni0451.miniconnect.protocol.packets.config.S2CConfigRegistryDataPacket;
-import net.lenni0451.miniconnect.protocol.packets.config.S2CConfigUpdateTagsPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SChatPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClickPacket;
-import net.lenni0451.miniconnect.protocol.packets.play.c2s.C2SContainerClosePacket;
-import net.lenni0451.miniconnect.protocol.packets.play.s2c.*;
+import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigRegistryDataPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigUpdateTagsPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SChatPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClickPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClosePacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 

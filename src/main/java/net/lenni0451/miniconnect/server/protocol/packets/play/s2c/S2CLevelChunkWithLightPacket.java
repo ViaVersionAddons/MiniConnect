@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol.packets.play.s2c;
+package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.chunks.Chunk;
 import com.viaversion.viaversion.api.type.Type;
@@ -7,7 +7,7 @@ import com.viaversion.viaversion.api.type.types.chunk.ChunkType1_20_2;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import net.lenni0451.miniconnect.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 

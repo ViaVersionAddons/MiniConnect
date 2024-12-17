@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.model;
+package net.lenni0451.miniconnect.server.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.raphimc.viaproxy.saves.impl.accounts.Account;

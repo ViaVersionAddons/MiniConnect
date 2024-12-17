@@ -1,4 +1,4 @@
-package net.lenni0451.miniconnect.protocol;
+package net.lenni0451.miniconnect.server.protocol;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import lombok.SneakyThrows;

@@ -29,7 +29,6 @@ public class RedirectionHandler {
         StateRegistry stateRegistry = Main.getInstance().getStateRegistry();
         InetAddress channelAddress = ChannelUtils.getChannelAddress(event.getClientChannel());
 
-        //TODO: Reconnecting with older clients does not work
         if (stateRegistry.getConnectionTargets().containsKey(channelAddress)) {
             ConnectionInfo target = stateRegistry.getConnectionTargets().remove(channelAddress);
             event.setServerAddress(MinecraftServerAddress.ofResolved(target.host(), target.port()));

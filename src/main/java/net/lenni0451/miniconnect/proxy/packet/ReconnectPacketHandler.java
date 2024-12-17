@@ -22,7 +22,6 @@ public class ReconnectPacketHandler extends PacketHandler {
     public boolean handleP2S(Packet packet, List<ChannelFutureListener> listeners) {
         if (!(packet instanceof S2CTransferPacket)) return true;
         ConnectionInfo connectionInfo = this.proxyConnection.getC2P().attr(AttributeKeys.CONNECTION_INFO).get();
-        System.out.println(connectionInfo);
         if (connectionInfo != null) { //The connection info is null if the player is not connected to a server
             Main.getInstance().getStateRegistry().getReconnectTargets().put(ChannelUtils.getChannelAddress(this.proxyConnection.getC2P()), connectionInfo);
         }

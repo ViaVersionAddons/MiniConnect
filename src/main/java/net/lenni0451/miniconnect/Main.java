@@ -6,6 +6,7 @@ import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.proxy.StateRegistry;
 import net.lenni0451.miniconnect.proxy.event.PacketHandlerRegistry;
 import net.lenni0451.miniconnect.proxy.event.RedirectionHandler;
+import net.lenni0451.miniconnect.proxy.event.ViaLoadHandler;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
 import net.lenni0451.miniconnect.server.LobbyServerInitializer;
 import net.raphimc.netminecraft.constants.IntendedState;
@@ -53,6 +54,7 @@ public class Main extends ViaProxyPlugin {
         ViaProxy.EVENT_MANAGER.register(this); //TODO: Remove this when the ViaVersion bug is fixed
         ViaProxy.EVENT_MANAGER.register(new RedirectionHandler());
         ViaProxy.EVENT_MANAGER.register(new PacketHandlerRegistry());
+        ViaProxy.EVENT_MANAGER.register(new ViaLoadHandler());
     }
 
     @EventHandler

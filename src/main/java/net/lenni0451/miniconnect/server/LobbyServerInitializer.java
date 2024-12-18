@@ -3,10 +3,10 @@ package net.lenni0451.miniconnect.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
+import net.lenni0451.miniconnect.haproxy.HAProxyHandler;
 import net.lenni0451.miniconnect.server.protocol.LobbyPacketRegistry;
 import net.raphimc.netminecraft.constants.MCPipeline;
 import net.raphimc.netminecraft.netty.connection.MinecraftChannelInitializer;
-import net.raphimc.viaproxy.proxy.client2proxy.HAProxyHandler;
 
 import java.util.function.Supplier;
 

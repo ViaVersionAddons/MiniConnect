@@ -18,8 +18,6 @@ public class HandshakeStateHandler extends StateHandler {
             this.channel.close();
             return;
         }
-        this.handler.getPlayerConfig().handshakeAddress = packet.address;
-        this.handler.getPlayerConfig().handshakePort = packet.port;
         this.setState(packet.intendedState.getConnectionState());
     }
 

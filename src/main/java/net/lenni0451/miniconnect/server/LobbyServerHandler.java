@@ -4,16 +4,18 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.ScheduledFuture;
+import net.lenni0451.miniconnect.model.AttributeKeys;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.states.*;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.concurrent.TimeUnit;
 
 public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
 
-    private final PlayerConfig playerConfig = new PlayerConfig(); //TODO: Maybe save/load this
+    private PlayerConfig playerConfig;
     private StateHandler handler;
     private ScheduledFuture<?> tickTask;
 
@@ -50,6 +52,12 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
 //        int packetId = registry.getPacketId(packet);
 //        MCPackets packetType = MCPackets.getPacket(registry.getConnectionState(), PacketDirection.SERVERBOUND, ProtocolConstants.PROTOCOL_VERSION.getVersion(), packetId);
 //        System.out.println(packetType);
+        if (this.playerConfig == null) {
+            Pair<String, Integer> handshakeData = ctx.channel().attr(AttributeKeys.HANDSHAKE_DATA).get();
+            this.playerConfig = new PlayerConfig();
+            this.playerConfig.handshakeAddress = handshakeData.getLeft();
+            this.playerConfig.handshakePort = handshakeData.getRight();
+        }
         this.handler.handle(packet);
     }
 

@@ -11,6 +11,7 @@ public class StateRegistry {
 
     private final Map<InetAddress, ConnectionInfo> connectionTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, ConnectionInfo>build().asMap();
     private final Map<InetAddress, ConnectionInfo> reconnectTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, ConnectionInfo>build().asMap();
+    private final Map<InetAddress, ConnectionInfo> lobbyTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, ConnectionInfo>build().asMap();
 
     public Map<InetAddress, ConnectionInfo> getConnectionTargets() {
         return this.connectionTargets;
@@ -18,6 +19,10 @@ public class StateRegistry {
 
     public Map<InetAddress, ConnectionInfo> getReconnectTargets() {
         return this.reconnectTargets;
+    }
+
+    public Map<InetAddress, ConnectionInfo> getLobbyTargets() {
+        return this.lobbyTargets;
     }
 
 }

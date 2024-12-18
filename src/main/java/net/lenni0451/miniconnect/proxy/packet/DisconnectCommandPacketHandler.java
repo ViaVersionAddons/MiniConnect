@@ -4,8 +4,10 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
+import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.model.AttributeKeys;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
+import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.packet.Packet;
@@ -54,6 +56,7 @@ public class DisconnectCommandPacketHandler extends PacketHandler {
             //If the connectionInfo is null, the player is currently on the lobby server
             return;
         }
+        Main.getInstance().getStateRegistry().getLobbyTargets().put(ChannelUtils.getChannelAddress(this.proxyConnection.getC2P()), connectionInfo);
         this.proxyConnection.getC2P().writeAndFlush(new S2CPlayTransferPacket(connectionInfo.handshakeAddress(), connectionInfo.handshakePort()));
     }
 

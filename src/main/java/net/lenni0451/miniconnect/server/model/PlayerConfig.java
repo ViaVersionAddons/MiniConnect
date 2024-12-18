@@ -10,6 +10,16 @@ import java.util.function.Function;
 
 public class PlayerConfig {
 
+    public static PlayerConfig fromConnectionInfo(final ConnectionInfo connectionInfo) {
+        PlayerConfig playerConfig = new PlayerConfig();
+        playerConfig.serverAddress = connectionInfo.host();
+        playerConfig.serverPort = connectionInfo.port();
+        playerConfig.targetVersion = connectionInfo.protocolVersion();
+        playerConfig.account = connectionInfo.account();
+        return playerConfig;
+    }
+
+
     @Nullable
     public String serverAddress;
     @Nullable

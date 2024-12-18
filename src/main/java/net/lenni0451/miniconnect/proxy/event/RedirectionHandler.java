@@ -30,17 +30,24 @@ public class RedirectionHandler {
         InetAddress channelAddress = ChannelUtils.getChannelAddress(event.getClientChannel());
 
         if (stateRegistry.getConnectionTargets().containsKey(channelAddress)) {
+            //First transfer from the lobby to the target server
+            //Set the target server address and version for the player to connect
             ConnectionInfo target = stateRegistry.getConnectionTargets().remove(channelAddress);
             event.setServerAddress(MinecraftServerAddress.ofResolved(target.host(), target.port()));
             event.setServerVersion(target.protocolVersion());
             event.getClientChannel().attr(AttributeKeys.CONNECTION_INFO).set(target);
         } else if (stateRegistry.getReconnectTargets().containsKey(channelAddress) && !event.getServerAddress().equals(DUMMY_SOCKET_ADDRESS)) {
+            //Subsequent transfers after the first initial transfer
+            //Only set the target server version since ViaProxy already knows the correct target address
             ConnectionInfo target = Main.getInstance().getStateRegistry().getReconnectTargets().remove(ChannelUtils.getChannelAddress(event.getClientChannel()));
             event.setServerVersion(target.protocolVersion());
             event.getClientChannel().attr(AttributeKeys.CONNECTION_INFO).set(target);
         } else {
+            //Initial connection from the client to the lobby
+            //Set the address and protocol version to the lobby server
             event.setServerAddress(Main.getInstance().getLobbyServer().getChannel().localAddress());
             event.setServerVersion(ProtocolConstants.PROTOCOL_VERSION);
+            event.getClientChannel().attr(AttributeKeys.ENABLE_HAPROXY).set(true); //Enable HAProxy so the lobby server knows the player ip
         }
     }
 

@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.proxy.StateRegistry;
+import net.lenni0451.miniconnect.proxy.event.HAProxyEnableHandler;
 import net.lenni0451.miniconnect.proxy.event.PacketHandlerRegistry;
 import net.lenni0451.miniconnect.proxy.event.RedirectionHandler;
 import net.lenni0451.miniconnect.proxy.event.ViaLoadHandler;
@@ -55,6 +56,7 @@ public class Main extends ViaProxyPlugin {
         ViaProxy.EVENT_MANAGER.register(new RedirectionHandler());
         ViaProxy.EVENT_MANAGER.register(new PacketHandlerRegistry());
         ViaProxy.EVENT_MANAGER.register(new ViaLoadHandler());
+        ViaProxy.EVENT_MANAGER.register(new HAProxyEnableHandler());
     }
 
     @EventHandler

@@ -50,6 +50,10 @@ public class DisconnectCommandPacketHandler extends PacketHandler {
 
     private void reconnect() {
         ConnectionInfo connectionInfo = this.proxyConnection.getC2P().attr(AttributeKeys.CONNECTION_INFO).get();
+        if (connectionInfo == null) {
+            //If the connectionInfo is null, the player is currently on the lobby server
+            return;
+        }
         this.proxyConnection.getC2P().writeAndFlush(new S2CPlayTransferPacket(connectionInfo.handshakeAddress(), connectionInfo.handshakePort()));
     }
 

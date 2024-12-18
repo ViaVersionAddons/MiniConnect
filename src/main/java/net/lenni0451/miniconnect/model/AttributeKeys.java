@@ -5,5 +5,6 @@ import io.netty.util.AttributeKey;
 public class AttributeKeys {
 
     public static final AttributeKey<ConnectionInfo> CONNECTION_INFO = AttributeKey.newInstance("MiniConnect_ConnectionInfo");
+    public static final AttributeKey<Boolean> ENABLE_HAPROXY = AttributeKey.newInstance("MiniConnect_EnableHAProxy");
 
 }

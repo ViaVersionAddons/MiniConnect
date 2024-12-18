@@ -4,7 +4,8 @@ public class Items {
 
     public static final String OAK_DOOR = "oak_door";
     public static final String BARRIER = "barrier";
-    public static final String WRITABLE_BOOK = "writable_book";
+    public static final String ANVIL = "anvil";
+    public static final String WRITTEN_BOOK = "written_book";
     public static final String NAMETAG = "name_tag";
     public static final String ARROW = "arrow";
     public static final String BEDROCK = "bedrock";
@@ -14,5 +15,6 @@ public class Items {
     public static final String GRAY_STAINED_GLASS_PANE = "gray_stained_glass_pane";
     public static final String TRIAL_KEY = "trial_key";
     public static final String LEVER = "lever";
+    public static final String ENDER_PEARL = "ender_pearl";
 
 }

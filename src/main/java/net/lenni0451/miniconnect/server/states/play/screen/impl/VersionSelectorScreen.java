@@ -58,6 +58,9 @@ public class VersionSelectorScreen extends Screen {
         for (int i = 46; i <= 52; i++) {
             itemList.set(i, item(Items.GRAY_STAINED_GLASS_PANE).named(new StringComponent(" ")).get());
         }
+        itemList.set(49, item(Items.ENDER_PEARL).named(new StringComponent("§cBack")).get(), () -> {
+            screenHandler.openScreen(new MainScreen());
+        });
         if (ProtocolVersion.getProtocols().size() > (this.page + 1) * 45) {
             itemList.set(53, item(Items.ARROW).named(new StringComponent("§aNext Page")).get(), () -> {
                 screenHandler.openScreen(new VersionSelectorScreen(this.page + 1));

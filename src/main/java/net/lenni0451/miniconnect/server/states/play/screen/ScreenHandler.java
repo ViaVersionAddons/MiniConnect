@@ -24,14 +24,18 @@ public class ScreenHandler {
     }
 
     public void openScreen(final Screen screen) {
-        this.currentItemList = new ItemList(screen.getRows() * 9);
+        if (this.currentScreen != null) this.stateHandler.getHandlerManager().unregister(this.currentScreen);
+        this.currentItemList = new ItemList(screen.getSlotCount());
         screen.init(this, this.currentItemList);
-        this.stateHandler.send(new S2COpenScreenPacket(1, screen.getRows() - 1, screen.getTitle()));
+        this.stateHandler.send(new S2COpenScreenPacket(1, screen.getInventoryType(), screen.getTitle()));
         this.stateHandler.send(new S2CContainerSetContentPacket(1, 0, this.currentItemList.getItems(), StructuredItem.empty()));
         this.currentScreen = screen;
+        this.stateHandler.getHandlerManager().register(this.currentScreen);
     }
 
     public void closeScreen() {
+        if (this.currentScreen == null) return;
+        this.stateHandler.getHandlerManager().unregister(this.currentScreen);
         this.currentScreen = null;
         this.stateHandler.send(new S2CContainerClosePacket(1));
     }
@@ -48,6 +52,7 @@ public class ScreenHandler {
     @EventHandler
     public void handle(final C2SContainerClosePacket packet) {
         Screen currentScreen = this.currentScreen;
+        this.stateHandler.getHandlerManager().unregister(this.currentScreen);
         this.currentScreen = null; //First set the screen to null because the close logic could open a new screen
         currentScreen.close(this);
     }

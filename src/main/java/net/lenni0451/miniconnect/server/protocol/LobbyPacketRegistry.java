@@ -3,6 +3,7 @@ package net.lenni0451.miniconnect.server.protocol;
 import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigRegistryDataPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigUpdateTagsPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SChatPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerButtonClickPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClickPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClosePacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
@@ -21,6 +22,7 @@ public class LobbyPacketRegistry extends DefaultPacketRegistry {
         this.registerPacket(MCPackets.C2S_CHAT, C2SChatPacket::new);
         this.registerPacket(MCPackets.C2S_CONTAINER_CLOSE, C2SContainerClosePacket::new);
         this.registerPacket(MCPackets.C2S_CONTAINER_CLICK, C2SContainerClickPacket::new);
+        this.registerPacket(MCPackets.C2S_CONTAINER_BUTTON_CLICK, C2SContainerButtonClickPacket::new);
 
         this.registerPacket(MCPackets.S2C_LOGIN, S2CLoginPacket::new);
         this.registerPacket(MCPackets.S2C_KEEP_ALIVE, S2CKeepAlivePacket::new);
@@ -32,6 +34,9 @@ public class LobbyPacketRegistry extends DefaultPacketRegistry {
         this.registerPacket(MCPackets.S2C_OPEN_SCREEN, S2COpenScreenPacket::new);
         this.registerPacket(MCPackets.S2C_TRANSFER, S2CTransferPacket::new);
         this.registerPacket(MCPackets.S2C_CONTAINER_SET_CONTENT, S2CContainerSetContentPacket::new);
+        this.registerPacket(MCPackets.S2C_OPEN_BOOK, S2COpenBookPacket::new);
+        this.registerPacket(MCPackets.S2C_SET_EQUIPMENT, S2CSetEquipmentPacket::new);
+        this.registerPacket(MCPackets.S2C_CONTAINER_SET_DATA, S2CContainerSetDataPacket::new);
     }
 
 }

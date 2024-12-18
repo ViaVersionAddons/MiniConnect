@@ -35,6 +35,10 @@ public class StateHandler {
         return this.channel;
     }
 
+    public LambdaManager getHandlerManager() {
+        return this.handlerManager;
+    }
+
     public void tick() {
     }
 

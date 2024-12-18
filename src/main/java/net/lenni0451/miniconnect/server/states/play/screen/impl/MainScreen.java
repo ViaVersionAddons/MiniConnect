@@ -39,7 +39,7 @@ public class MainScreen extends Screen {
         boolean hasVersion = playerConfig.targetVersion != null;
         boolean hasAccount = playerConfig.account != null;
 
-        itemList.set(10, item(Items.NAMETAG).named(new StringComponent("§aSet server address")).setGlint(hasAddress).calculate(builder -> {
+        itemList.set(11, item(Items.NAMETAG).named(new StringComponent("§aSet server address")).setGlint(hasAddress).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to set the server address to connect to"));
             if (hasAddress) {
                 builder.lore(new StringComponent("§aAddress: §6" + playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
@@ -63,7 +63,7 @@ public class MainScreen extends Screen {
                 return true;
             };
         });
-        itemList.set(11, item(Items.WRITABLE_BOOK).named(new StringComponent("§aSet protocol version")).setGlint(hasVersion).calculate(builder -> {
+        itemList.set(12, item(Items.ANVIL).named(new StringComponent("§aSet protocol version")).setGlint(hasVersion).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to set the protocol version to connect with"));
             if (hasVersion) {
                 builder.lore(new StringComponent("§aVersion: §6" + playerConfig.targetVersion.getName()));
@@ -73,7 +73,7 @@ public class MainScreen extends Screen {
         }).get(), () -> {
             screenHandler.openScreen(new VersionSelectorScreen(0));
         });
-        itemList.set(12, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).setGlint(hasAccount).calculate(builder -> {
+        itemList.set(13, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).setGlint(hasAccount).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to login with your Microsoft account"));
             if (hasAccount) {
                 builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
@@ -105,9 +105,6 @@ public class MainScreen extends Screen {
             });
             screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
         });
-//        itemList.set(13, item(Items.LEVER).named(new StringComponent("§aSettings")).get(), () -> {
-//            //TODO
-//        });
         itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent("§a§lConnect to server")).setGlint(hasAddress && hasVersion).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to connect to the server"));
             if (!hasAddress) builder.lore(new StringComponent("§cNo address set (required)"));
@@ -129,6 +126,9 @@ public class MainScreen extends Screen {
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));
             }
+        });
+        itemList.set(18, item(Items.WRITTEN_BOOK).named(new StringComponent("§6How to use")).setGlint(false).get(), () -> {
+            screenHandler.openScreen(new TutorialScreen());
         });
         itemList.set(26, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
             screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));

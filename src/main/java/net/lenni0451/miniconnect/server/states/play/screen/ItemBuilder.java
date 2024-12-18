@@ -10,9 +10,7 @@ import net.lenni0451.mcstructs.text.ATextComponent;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ViaUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ItemBuilder {
@@ -25,7 +23,8 @@ public class ItemBuilder {
     private final String id;
     private ATextComponent name;
     private final List<ATextComponent> lore = new ArrayList<>();
-    private boolean glint = false;
+    private Boolean glint;
+    private final Map<StructuredDataKey, Object> structuredData = new HashMap<>();
 
     private ItemBuilder(final String id) {
         this.id = id;
@@ -43,6 +42,11 @@ public class ItemBuilder {
 
     public ItemBuilder setGlint(final boolean state) {
         this.glint = state;
+        return this;
+    }
+
+    public <T> ItemBuilder data(final StructuredDataKey<T> key, final T value) {
+        this.structuredData.put(key, value);
         return this;
     }
 
@@ -66,8 +70,11 @@ public class ItemBuilder {
             }
             item.dataContainer().set(StructuredDataKey.LORE, lore);
         }
-        if (this.glint) {
-            item.dataContainer().set(StructuredDataKey.ENCHANTMENT_GLINT_OVERRIDE, true);
+        if (this.glint != null) {
+            item.dataContainer().set(StructuredDataKey.ENCHANTMENT_GLINT_OVERRIDE, this.glint);
+        }
+        for (Map.Entry<StructuredDataKey, Object> entry : this.structuredData.entrySet()) {
+            item.dataContainer().set(entry.getKey(), entry.getValue());
         }
         return item;
     }

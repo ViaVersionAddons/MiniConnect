@@ -14,6 +14,7 @@ import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.TimeUnit;
 
 public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
@@ -70,7 +71,8 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause instanceof ClosedChannelException) return;
         cause.printStackTrace();
         ctx.close();
     }

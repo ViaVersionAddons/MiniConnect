@@ -17,11 +17,13 @@ import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
+import net.lenni0451.miniconnect.utils.InetUtils;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
 import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeoutException;
 
 import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.item;
@@ -52,7 +54,8 @@ public class MainScreen extends Screen {
             playerConfig.chatListener = s -> {
                 try {
                     HostAndPort hostAndPort = HostAndPort.fromString(s);
-                    if (hostAndPort.getHost().isBlank()) throw new IllegalStateException();
+                    if (hostAndPort.getHost().isBlank()) throw new IllegalArgumentException();
+                    if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new IllegalArgumentException();
                     playerConfig.serverAddress = hostAndPort.getHost();
                     playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
                 } catch (Throwable t) {

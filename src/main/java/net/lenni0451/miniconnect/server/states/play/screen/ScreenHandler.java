@@ -42,6 +42,7 @@ public class ScreenHandler {
 
     @EventHandler
     public void handle(final C2SContainerClickPacket packet) {
+        if (this.currentScreen == null) return;
         this.stateHandler.send(new S2CContainerSetContentPacket(1, 0, this.currentItemList.getItems(), StructuredItem.empty()));
         if (packet.button == 0 && packet.slot >= 0 && packet.slot < this.currentItemList.getItems().length) {
             ItemList.ClickListener listener = this.currentItemList.getListeners()[packet.slot];

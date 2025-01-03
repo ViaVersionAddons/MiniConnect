@@ -1,10 +1,7 @@
 package net.lenni0451.miniconnect;
 
 import net.lenni0451.miniconnect.proxy.StateRegistry;
-import net.lenni0451.miniconnect.proxy.event.HAProxyEnableHandler;
-import net.lenni0451.miniconnect.proxy.event.PacketHandlerRegistry;
-import net.lenni0451.miniconnect.proxy.event.RedirectionHandler;
-import net.lenni0451.miniconnect.proxy.event.ViaLoadHandler;
+import net.lenni0451.miniconnect.proxy.event.*;
 import net.lenni0451.miniconnect.server.LobbyServerInitializer;
 import net.raphimc.netminecraft.netty.connection.NetServer;
 import net.raphimc.viaproxy.ViaProxy;
@@ -46,6 +43,7 @@ public class Main extends ViaProxyPlugin {
         ViaProxy.EVENT_MANAGER.register(new PacketHandlerRegistry());
         ViaProxy.EVENT_MANAGER.register(new ViaLoadHandler());
         ViaProxy.EVENT_MANAGER.register(new HAProxyEnableHandler());
+        ViaProxy.EVENT_MANAGER.register(new OnlineModeHandler());
     }
 
 }

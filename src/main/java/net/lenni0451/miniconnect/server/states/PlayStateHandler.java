@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import net.lenni0451.lambdaevents.EventHandler;
 import net.lenni0451.miniconnect.server.LobbyServerHandler;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SChatCommandPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SChatPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
@@ -56,6 +57,16 @@ public class PlayStateHandler extends StateHandler {
         if (this.handler.getPlayerConfig().chatListener != null) {
             Function<String, Boolean> listener = this.handler.getPlayerConfig().chatListener;
             if (listener.apply(packet.message)) {
+                this.handler.getPlayerConfig().chatListener = null;
+            }
+        }
+    }
+
+    @EventHandler
+    public void handle(final C2SChatCommandPacket packet) {
+        if (this.handler.getPlayerConfig().chatListener != null) {
+            Function<String, Boolean> listener = this.handler.getPlayerConfig().chatListener;
+            if (listener.apply("/" + packet.message)) {
                 this.handler.getPlayerConfig().chatListener = null;
             }
         }

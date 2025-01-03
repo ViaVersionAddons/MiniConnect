@@ -52,15 +52,19 @@ public class MainScreen extends Screen {
             screenHandler.closeScreen();
             screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aPlease enter the server ip into the chat (with optional port) (e.g. example.com, example.com:25565"), false));
             playerConfig.chatListener = s -> {
-                try {
-                    HostAndPort hostAndPort = HostAndPort.fromString(s);
-                    if (hostAndPort.getHost().isBlank()) throw new IllegalArgumentException();
-                    if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new IllegalArgumentException();
-                    playerConfig.serverAddress = hostAndPort.getHost();
-                    playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
-                } catch (Throwable t) {
-                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
-                    return false;
+                if (s.startsWith("/")) {
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cCancelled input"), false));
+                } else {
+                    try {
+                        HostAndPort hostAndPort = HostAndPort.fromString(s);
+                        if (hostAndPort.getHost().isBlank()) throw new IllegalArgumentException();
+                        if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new IllegalArgumentException();
+                        playerConfig.serverAddress = hostAndPort.getHost();
+                        playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
+                    } catch (Throwable t) {
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
+                        return false;
+                    }
                 }
                 screenHandler.openScreen(this);
                 return true;

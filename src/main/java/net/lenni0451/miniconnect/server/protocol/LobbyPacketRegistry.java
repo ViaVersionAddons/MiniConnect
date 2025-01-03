@@ -2,10 +2,7 @@ package net.lenni0451.miniconnect.server.protocol;
 
 import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigRegistryDataPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.config.S2CConfigUpdateTagsPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SChatPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerButtonClickPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClickPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerClosePacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.*;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
@@ -23,6 +20,7 @@ public class LobbyPacketRegistry extends DefaultPacketRegistry {
         this.registerPacket(MCPackets.C2S_CONTAINER_CLOSE, C2SContainerClosePacket::new);
         this.registerPacket(MCPackets.C2S_CONTAINER_CLICK, C2SContainerClickPacket::new);
         this.registerPacket(MCPackets.C2S_CONTAINER_BUTTON_CLICK, C2SContainerButtonClickPacket::new);
+        this.registerPacket(MCPackets.C2S_CHAT_COMMAND, C2SChatCommandPacket::new);
 
         this.registerPacket(MCPackets.S2C_LOGIN, S2CLoginPacket::new);
         this.registerPacket(MCPackets.S2C_KEEP_ALIVE, S2CKeepAlivePacket::new);

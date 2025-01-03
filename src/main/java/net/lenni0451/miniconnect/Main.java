@@ -8,7 +8,6 @@ import net.lenni0451.miniconnect.proxy.event.HAProxyEnableHandler;
 import net.lenni0451.miniconnect.proxy.event.PacketHandlerRegistry;
 import net.lenni0451.miniconnect.proxy.event.RedirectionHandler;
 import net.lenni0451.miniconnect.proxy.event.ViaLoadHandler;
-import net.lenni0451.miniconnect.server.LobbyServerHandler;
 import net.lenni0451.miniconnect.server.LobbyServerInitializer;
 import net.raphimc.netminecraft.constants.IntendedState;
 import net.raphimc.netminecraft.constants.MCPipeline;
@@ -49,7 +48,7 @@ public class Main extends ViaProxyPlugin {
     @Override
     public void onEnable() {
         this.stateRegistry = new StateRegistry();
-        this.lobbyServer = new NetServer(LobbyServerHandler::new, LobbyServerInitializer::new);
+        this.lobbyServer = new NetServer(new LobbyServerInitializer());
         this.lobbyServer.bind(new InetSocketAddress("localhost", 0), false);
 
         ViaProxy.EVENT_MANAGER.register(this); //TODO: Remove this when the ViaVersion bug is fixed

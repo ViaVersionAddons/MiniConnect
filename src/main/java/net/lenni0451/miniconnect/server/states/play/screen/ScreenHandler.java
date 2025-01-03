@@ -52,6 +52,7 @@ public class ScreenHandler {
 
     @EventHandler
     public void handle(final C2SContainerClosePacket packet) {
+        if (this.currentScreen == null) return;
         Screen currentScreen = this.currentScreen;
         this.stateHandler.getHandlerManager().unregister(this.currentScreen);
         this.currentScreen = null; //First set the screen to null because the close logic could open a new screen

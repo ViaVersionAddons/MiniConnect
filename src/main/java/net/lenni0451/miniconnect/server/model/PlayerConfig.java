@@ -31,6 +31,7 @@ public class PlayerConfig {
 
     public transient String handshakeAddress;
     public transient int handshakePort;
+    public transient ProtocolVersion clientVersion;
     public transient Function<String, Boolean> chatListener;
 
     public ConnectionInfo toConnectionInfo() {

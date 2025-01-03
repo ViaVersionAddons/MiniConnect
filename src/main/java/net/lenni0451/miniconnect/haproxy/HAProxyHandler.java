@@ -1,5 +1,6 @@
 package net.lenni0451.miniconnect.haproxy;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.AbstractChannel;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +11,7 @@ import io.netty.handler.codec.haproxy.HAProxyTLV;
 import net.lenni0451.miniconnect.model.AttributeKeys;
 import net.lenni0451.reflect.stream.RStream;
 import net.raphimc.netminecraft.packet.PacketTypes;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.net.InetSocketAddress;
 
@@ -37,7 +38,8 @@ public class HAProxyHandler extends SimpleChannelInboundHandler<HAProxyMessage> 
                 ByteBuf content = tlv.content();
                 String host = PacketTypes.readString(content, Short.MAX_VALUE);
                 int port = content.readUnsignedShort();
-                ctx.channel().attr(AttributeKeys.HANDSHAKE_DATA).set(Pair.of(host, port));
+                ProtocolVersion clientVersion = ProtocolVersion.getProtocol(content.readInt());
+                ctx.channel().attr(AttributeKeys.HANDSHAKE_DATA).set(Triple.of(host, port, clientVersion));
                 hasHandshakeData = true;
             }
         }

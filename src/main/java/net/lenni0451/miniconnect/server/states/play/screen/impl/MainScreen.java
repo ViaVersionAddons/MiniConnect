@@ -2,7 +2,14 @@ package net.lenni0451.miniconnect.server.states.play.screen.impl;
 
 import com.google.common.net.HostAndPort;
 import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.minecraft.data.StructuredDataContainer;
+import com.viaversion.viaversion.api.minecraft.data.StructuredDataKey;
+import com.viaversion.viaversion.api.minecraft.item.Item;
+import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
+import com.viaversion.viaversion.api.minecraft.item.data.FilterableString;
+import com.viaversion.viaversion.api.minecraft.item.data.WrittenBook;
 import com.viaversion.viaversion.api.platform.PlatformTask;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.mcstructs.core.TextFormatting;
 import net.lenni0451.mcstructs.text.ATextComponent;
 import net.lenni0451.mcstructs.text.components.StringComponent;
@@ -10,8 +17,12 @@ import net.lenni0451.mcstructs.text.events.click.ClickEvent;
 import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
+import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CContainerSetContentPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2COpenBookPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CSystemChatPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CTransferPacket;
+import net.lenni0451.miniconnect.server.states.play.Tutorial;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
@@ -134,8 +145,31 @@ public class MainScreen extends Screen {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));
             }
         });
-        itemList.set(18, item(Items.WRITTEN_BOOK).named(new StringComponent("§6How to use")).setGlint(false).get(), () -> {
-            screenHandler.openScreen(new TutorialScreen());
+        itemList.set(18, item(Items.WRITTEN_BOOK).named(new StringComponent("§6How to use")).get(), () -> {
+            if (playerConfig.clientVersion.newerThanOrEqualTo(ProtocolVersion.v1_19)) {
+                screenHandler.openScreen(new TutorialScreen());
+            } else {
+                screenHandler.closeScreen();
+                screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§6§lType anything in chat to open the UI again"), false));
+                StructuredItem book = new StructuredItem(ProtocolConstants.ITEMS.indexOf(Items.WRITTEN_BOOK), 1, new StructuredDataContainer());
+                book.dataContainer().setIdLookup(ProtocolConstants.VIA_PROTOCOL, false);
+                book.dataContainer().set(StructuredDataKey.WRITTEN_BOOK_CONTENT, new WrittenBook(
+                        new FilterableString("How to use MiniConnect", null),
+                        "MiniConnect",
+                        0,
+                        Tutorial.TEXT,
+                        true
+                ));
+                Item[] items = StructuredItem.emptyArray(45);
+                for (int i = 36; i < 45; i++) items[i] = book;
+                screenHandler.getStateHandler().send(new S2CContainerSetContentPacket(0, 0, items, StructuredItem.empty()));
+                screenHandler.getStateHandler().send(new S2COpenBookPacket(0));
+                screenHandler.getStateHandler().send(new S2CContainerSetContentPacket(0, 0, StructuredItem.emptyArray(45), StructuredItem.empty()));
+                playerConfig.chatListener = s -> {
+                    screenHandler.openScreen(new MainScreen());
+                    return true;
+                };
+            }
         });
         itemList.set(26, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
             screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));

@@ -1,5 +1,8 @@
 package net.lenni0451.miniconnect.server.protocol;
 
+import com.viaversion.viabackwards.protocol.v1_21_4to1_21_2.Protocol1_21_4To1_21_2;
+import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.protocol.Protocol;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import lombok.SneakyThrows;
 import net.lenni0451.commons.gson.GsonParser;
@@ -28,6 +31,7 @@ public class ProtocolConstants {
     public static final String[] DIMENSIONS;
     public static final int CHUNK_SECTION_COUNT = 16; //16 for the end
     public static final byte[] FULL_LIGHT = new byte[2048];
+    public static final Protocol<?, ?, ?, ?> VIA_PROTOCOL = Via.getManager().getProtocolManager().getProtocol(Protocol1_21_4To1_21_2.class);
 
     static {
         REGISTRIES = readCompound("registries.nbt", tag -> {

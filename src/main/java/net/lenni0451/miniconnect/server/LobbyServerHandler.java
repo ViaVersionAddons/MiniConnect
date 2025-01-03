@@ -1,5 +1,6 @@
 package net.lenni0451.miniconnect.server;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -12,7 +13,7 @@ import net.lenni0451.miniconnect.server.states.*;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.TimeUnit;
@@ -58,14 +59,15 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
 //        System.out.println(packetType);
         if (this.playerConfig == null) {
             ConnectionInfo previousConnectionInfo = Main.getInstance().getStateRegistry().getLobbyTargets().remove(ChannelUtils.getChannelAddress(ctx.channel()));
-            Pair<String, Integer> handshakeData = ctx.channel().attr(AttributeKeys.HANDSHAKE_DATA).get();
+            Triple<String, Integer, ProtocolVersion> handshakeData = ctx.channel().attr(AttributeKeys.HANDSHAKE_DATA).get();
             if (previousConnectionInfo == null) {
                 this.playerConfig = new PlayerConfig();
             } else {
                 this.playerConfig = PlayerConfig.fromConnectionInfo(previousConnectionInfo);
             }
             this.playerConfig.handshakeAddress = handshakeData.getLeft();
-            this.playerConfig.handshakePort = handshakeData.getRight();
+            this.playerConfig.handshakePort = handshakeData.getMiddle();
+            this.playerConfig.clientVersion = handshakeData.getRight();
         }
         this.handler.handle(packet);
     }

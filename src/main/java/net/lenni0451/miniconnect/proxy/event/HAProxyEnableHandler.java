@@ -32,7 +32,7 @@ public class HAProxyEnableHandler {
             @Override
             public void channelActive(ChannelHandlerContext ctx) throws Exception {
                 super.channelActive(ctx);
-                ctx.writeAndFlush(HAProxyUtil.createMessage(proxyConnection.getC2P(), ctx.channel(), proxyConnection.getClientHandshakeAddress())).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+                ctx.writeAndFlush(HAProxyUtil.createMessage(proxyConnection.getC2P(), ctx.channel(), proxyConnection.getClientHandshakeAddress(), proxyConnection.getClientVersion())).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
             }
         });
         event.getChannel().pipeline().addFirst(VIAPROXY_HAPROXY_ENCODER_NAME, HAProxyMessageEncoder.INSTANCE);

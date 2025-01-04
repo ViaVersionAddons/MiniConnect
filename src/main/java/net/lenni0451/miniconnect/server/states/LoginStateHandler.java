@@ -18,6 +18,7 @@ public class LoginStateHandler extends StateHandler {
 
     @EventHandler
     public void handle(final C2SLoginHelloPacket packet) {
+        this.handler.loadPlayerConfig(this.channel, packet.uuid);
         this.send(new S2CLoginGameProfilePacket(packet.uuid, packet.name, new ArrayList<>()));
     }
 

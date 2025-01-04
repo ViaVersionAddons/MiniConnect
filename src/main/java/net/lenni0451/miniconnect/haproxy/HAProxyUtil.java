@@ -7,7 +7,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.handler.codec.haproxy.*;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.lenni0451.miniconnect.model.HandshakeData;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -18,9 +18,7 @@ public class HAProxyUtil {
     public static HAProxyMessage createMessage(final Channel sourceChannel, final Channel targetChannel, final HostAndPort handshakeAddress, final ProtocolVersion clientVersion) {
         List<HAProxyTLV> tlvs = new ArrayList<>();
         ByteBuf handshakeBuf = Unpooled.buffer();
-        PacketTypes.writeString(handshakeBuf, handshakeAddress.getHost());
-        handshakeBuf.writeShort(handshakeAddress.getPort());
-        handshakeBuf.writeInt(clientVersion.getOriginalVersion());
+        new HandshakeData(handshakeAddress.getHost(), handshakeAddress.getPort(), clientVersion).write(handshakeBuf);
         tlvs.add(new HAProxyTLV((byte) 0xE0, handshakeBuf));
 
         if (sourceChannel.remoteAddress() instanceof InetSocketAddress sourceAddress && targetChannel.remoteAddress() instanceof InetSocketAddress targetAddress) {

@@ -20,7 +20,7 @@ public class RedirectionHandler {
     private static final DomainSocketAddress DUMMY_SOCKET_ADDRESS = new DomainSocketAddress("/miniconnect/lobby");
 
     @EventHandler
-    public void onViaProxyLoaded(final ViaProxyLoadedEvent events) {
+    public void onViaProxyLoaded(final ViaProxyLoadedEvent event) {
         ViaProxy.getConfig().setTargetAddress(DUMMY_SOCKET_ADDRESS);
     }
 

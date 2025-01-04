@@ -18,7 +18,7 @@ import static net.raphimc.viaproxy.proxy.proxy2server.Proxy2ServerChannelInitial
 public class HAProxyEnableHandler {
 
     @EventHandler
-    public void onViaProxyLoaded(final ViaProxyLoadedEvent events) {
+    public void onViaProxyLoaded(final ViaProxyLoadedEvent event) {
         ViaProxy.getConfig().setBackendHaProxy(false);
         ViaProxy.getConfig().setAllowLegacyClientPassthrough(false);
     }

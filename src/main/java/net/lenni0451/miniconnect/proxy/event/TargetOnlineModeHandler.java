@@ -3,7 +3,7 @@ package net.lenni0451.miniconnect.proxy.event;
 import net.lenni0451.lambdaevents.EventHandler;
 import net.raphimc.viaproxy.plugins.events.JoinServerRequestEvent;
 
-public class OnlineModeHandler {
+public class TargetOnlineModeHandler {
 
     @EventHandler(priority = Integer.MIN_VALUE)
     public void onJoinServerRequest(final JoinServerRequestEvent event) {

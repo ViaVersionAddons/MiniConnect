@@ -43,7 +43,8 @@ public class Main extends ViaProxyPlugin {
         ViaProxy.EVENT_MANAGER.register(new PacketHandlerRegistry());
         ViaProxy.EVENT_MANAGER.register(new ViaLoadHandler());
         ViaProxy.EVENT_MANAGER.register(new HAProxyEnableHandler());
-        ViaProxy.EVENT_MANAGER.register(new OnlineModeHandler());
+        ViaProxy.EVENT_MANAGER.register(new TargetOnlineModeHandler());
+        ViaProxy.EVENT_MANAGER.register(new ProxyOnlineModeHandler());
     }
 
 }

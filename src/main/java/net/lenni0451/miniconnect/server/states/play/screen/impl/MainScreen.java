@@ -33,6 +33,7 @@ import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
 import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
+import net.raphimc.viaproxy.util.logging.Logger;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +43,7 @@ import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.it
 public class MainScreen extends Screen {
 
     public MainScreen() {
-        super(new StringComponent("§aMiniConnect"), 3);
+        super(new StringComponent("§aMiniConnect"), 4);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class MainScreen extends Screen {
             });
             screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
         });
-        itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent("§a§lConnect to server")).setGlint(hasAddress && hasVersion).calculate(builder -> {
+        itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent("§aConnect to server")).setGlint(hasAddress && hasVersion).calculate(builder -> {
             builder.lore(new StringComponent("§bClick to connect to the server"));
             if (!hasAddress) builder.lore(new StringComponent("§cNo address set (required)"));
             if (!hasVersion) builder.lore(new StringComponent("§cNo version set (required)"));
@@ -136,6 +137,13 @@ public class MainScreen extends Screen {
             if (hasAccount) builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
         }).get(), () -> {
             if (hasAddress && hasVersion) {
+                if (playerConfig.isSaved) {
+                    try {
+                        playerConfig.save();
+                    } catch (Exception e) {
+                        Logger.LOGGER.error("Failed to save player config", e);
+                    }
+                }
                 Main.getInstance().getStateRegistry().getConnectionTargets().put(
                         ChannelUtils.getChannelAddress(screenHandler.getStateHandler().getChannel()),
                         playerConfig.toConnectionInfo()
@@ -145,7 +153,33 @@ public class MainScreen extends Screen {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));
             }
         });
-        itemList.set(18, item(Items.WRITTEN_BOOK).named(new StringComponent("§6How to use")).get(), () -> {
+        itemList.set(20, item(Items.ENDER_CHEST).setGlint(playerConfig.isSaved).calculate(builder -> {
+            if (playerConfig.isSaved) {
+                builder.named(new StringComponent("§aViaProxy online mode §a§lEnabled"));
+                builder.lore(new StringComponent("§bOnline mode is enabled"));
+                builder.lore(new StringComponent("§bAll settings are saved between sessions"));
+                builder.lore(new StringComponent("§6Click again to disable online mode"));
+            } else {
+                builder.named(new StringComponent("§aViaProxy online mode §c§lDisabled"));
+                builder.lore(new StringComponent("§bRequire a premium account to join ViaProxy"));
+                builder.lore(new StringComponent("§bYou need to reconnect with your account for verification"));
+                builder.lore(new StringComponent("§6If enabled, your settings will be saved between sessions"));
+            }
+        }).get(), () -> {
+            if (playerConfig.isSaved) {
+                playerConfig.delete();
+                screenHandler.openScreen(new MainScreen());
+            } else {
+                Main.getInstance().getStateRegistry().getVerificationQueue().add(playerConfig.uuid);
+                screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("""
+                        §aIn order to verify your online mode status, please reconnect within 60 seconds.
+                        §aIf you connect with a premium account, storage persistence will be enabled.
+                        §aIf you fail the verification, your account will stay in offline mode.
+                        §aAfter enabling online mode, you can disable it at any time by clicking the item again.""")));
+            }
+        });
+
+        itemList.set(27, item(Items.BOOK).named(new StringComponent("§6How to use")).get(), () -> {
             if (playerConfig.clientVersion.newerThanOrEqualTo(ProtocolVersion.v1_19)) {
                 screenHandler.openScreen(new TutorialScreen());
             } else {
@@ -171,7 +205,7 @@ public class MainScreen extends Screen {
                 };
             }
         });
-        itemList.set(26, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
+        itemList.set(35, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
             screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
         });
     }

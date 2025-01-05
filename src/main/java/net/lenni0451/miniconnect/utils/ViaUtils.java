@@ -4,6 +4,7 @@ import com.viaversion.nbt.tag.*;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.Map;
 
 public class ViaUtils {
@@ -21,7 +22,7 @@ public class ViaUtils {
             case BYTE_ARRAY -> new ByteArrayTag(nbt.asByteArrayTag().getValue());
             case STRING -> new StringTag(nbt.asStringTag().getValue());
             case LIST -> {
-                ListTag<? super Tag> listTag = new ListTag<>();
+                ListTag<? super Tag> listTag = new ListTag<>(Collections.emptyList());
                 for (INbtTag tag : nbt.asListTag()) {
                     listTag.add(convertNbt(tag));
                 }

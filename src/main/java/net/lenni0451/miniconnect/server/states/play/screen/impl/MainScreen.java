@@ -144,10 +144,9 @@ public class MainScreen extends Screen {
                         Logger.LOGGER.error("Failed to save player config", e);
                     }
                 }
-                Main.getInstance().getStateRegistry().getConnectionTargets().put(
-                        ChannelUtils.getChannelAddress(screenHandler.getStateHandler().getChannel()),
-                        playerConfig.toConnectionInfo()
-                );
+                InetAddress channelAddress = ChannelUtils.getChannelAddress(screenHandler.getStateHandler().getChannel());
+                Main.getInstance().getStateRegistry().getConnectionTargets().put(channelAddress, playerConfig.toConnectionInfo());
+                Main.getInstance().getStateRegistry().getChangeHandshakeIntent().add(channelAddress);
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
                 screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));

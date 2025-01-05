@@ -16,6 +16,7 @@ public class StateRegistry {
     private final Map<InetAddress, ConnectionInfo> reconnectTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, ConnectionInfo>build().asMap();
     private final Map<InetAddress, ConnectionInfo> lobbyTargets = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, ConnectionInfo>build().asMap();
     private final Set<UUID> verificationQueue = Collections.newSetFromMap(CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<UUID, Boolean>build().asMap());
+    private final Set<InetAddress> changeHandshakeIntent = Collections.newSetFromMap(CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).<InetAddress, Boolean>build().asMap());
 
     public Map<InetAddress, ConnectionInfo> getConnectionTargets() {
         return this.connectionTargets;
@@ -31,6 +32,10 @@ public class StateRegistry {
 
     public Set<UUID> getVerificationQueue() {
         return this.verificationQueue;
+    }
+
+    public Set<InetAddress> getChangeHandshakeIntent() {
+        return this.changeHandshakeIntent;
     }
 
 }

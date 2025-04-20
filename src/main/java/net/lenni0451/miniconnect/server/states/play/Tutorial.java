@@ -58,7 +58,7 @@ public class Tutorial {
                 if (i != 0) base.append("\n");
                 base.append(lines[i]);
             }
-            components.add(new FilterableComponent(ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(base)), null));
+            components.add(new FilterableComponent(ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbtTree(base)), null));
         }
         return components.toArray(new FilterableComponent[0]);
     }

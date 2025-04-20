@@ -1,7 +1,7 @@
 package net.lenni0451.miniconnect.utils;
 
 import com.viaversion.nbt.tag.*;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ViaUtils {
 
-    public static Tag convertNbt(@Nullable final INbtTag nbt) {
+    public static Tag convertNbt(@Nullable final NbtTag nbt) {
         if (nbt == null) return null;
         return switch (nbt.getNbtType()) {
             case END -> throw new UnsupportedOperationException();
@@ -23,14 +23,14 @@ public class ViaUtils {
             case STRING -> new StringTag(nbt.asStringTag().getValue());
             case LIST -> {
                 ListTag<? super Tag> listTag = new ListTag<>(Collections.emptyList());
-                for (INbtTag tag : nbt.asListTag()) {
+                for (NbtTag tag : nbt.asListTag()) {
                     listTag.add(convertNbt(tag));
                 }
                 yield listTag;
             }
             case COMPOUND -> {
                 CompoundTag compoundTag = new CompoundTag();
-                for (Map.Entry<String, INbtTag> entry : nbt.asCompoundTag()) {
+                for (Map.Entry<String, NbtTag> entry : nbt.asCompoundTag()) {
                     compoundTag.put(entry.getKey(), convertNbt(entry.getValue()));
                 }
                 yield compoundTag;

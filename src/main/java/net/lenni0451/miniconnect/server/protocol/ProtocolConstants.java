@@ -7,7 +7,7 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import lombok.SneakyThrows;
 import net.lenni0451.commons.gson.GsonParser;
 import net.lenni0451.commons.gson.elements.GsonElement;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.io.NbtIO;
 import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
@@ -36,16 +36,16 @@ public class ProtocolConstants {
     static {
         REGISTRIES = readCompound("registries.nbt", tag -> {
             Map<String, CompoundTag> registries = new HashMap<>();
-            for (Map.Entry<String, INbtTag> entry : tag) {
+            for (Map.Entry<String, NbtTag> entry : tag) {
                 registries.put(entry.getKey(), entry.getValue().asCompoundTag());
             }
             return registries;
         });
         TAGS = readCompound("tags.nbt", tag -> {
             Map<String, Map<String, int[]>> tags = new HashMap<>();
-            for (Map.Entry<String, INbtTag> entry : tag) {
+            for (Map.Entry<String, NbtTag> entry : tag) {
                 Map<String, int[]> registryTags = new HashMap<>();
-                for (Map.Entry<String, INbtTag> tagEntry : entry.getValue().asCompoundTag()) {
+                for (Map.Entry<String, NbtTag> tagEntry : entry.getValue().asCompoundTag()) {
                     registryTags.put(tagEntry.getKey(), tagEntry.getValue().asIntArrayTag().getValue());
                 }
                 tags.put(entry.getKey(), registryTags);
@@ -61,7 +61,7 @@ public class ProtocolConstants {
     private static <T> T readCompound(final String name, final Function<CompoundTag, T> mapper) {
         InputStream stream = ProtocolConstants.class.getClassLoader().getResourceAsStream(name);
         if (stream == null) throw new IllegalStateException("Missing resource: " + name);
-        return mapper.apply(NbtIO.JAVA.read(stream, true, NbtReadTracker.unlimited()).asCompoundTag());
+        return mapper.apply(NbtIO.LATEST.read(stream, true, NbtReadTracker.unlimitedDepth()).asCompoundTag());
     }
 
     @SneakyThrows

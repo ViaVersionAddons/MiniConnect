@@ -1,26 +1,26 @@
 package net.lenni0451.miniconnect.server.states.play.screen;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 
 public abstract class Screen {
 
-    private final ATextComponent title;
+    private final TextComponent title;
     private final int slotCount;
     private final int inventoryType;
 
-    public Screen(final ATextComponent title, final int rows) {
+    public Screen(final TextComponent title, final int rows) {
         this.title = title;
         this.slotCount = rows * 9;
         this.inventoryType = rows - 1;
     }
 
-    public Screen(final ATextComponent title, final int inventoryType, final int slotCount) {
+    public Screen(final TextComponent title, final int inventoryType, final int slotCount) {
         this.title = title;
         this.slotCount = slotCount;
         this.inventoryType = inventoryType;
     }
 
-    public ATextComponent getTitle() {
+    public TextComponent getTitle() {
         return this.title;
     }
 

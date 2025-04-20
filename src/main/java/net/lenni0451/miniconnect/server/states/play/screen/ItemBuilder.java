@@ -6,7 +6,7 @@ import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.minecraft.data.StructuredDataKey;
 import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.minecraft.item.StructuredItem;
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ViaUtils;
 
@@ -21,8 +21,8 @@ public class ItemBuilder {
 
 
     private final String id;
-    private ATextComponent name;
-    private final List<ATextComponent> lore = new ArrayList<>();
+    private TextComponent name;
+    private final List<TextComponent> lore = new ArrayList<>();
     private Boolean glint;
     private final Map<StructuredDataKey, Object> structuredData = new HashMap<>();
 
@@ -30,12 +30,12 @@ public class ItemBuilder {
         this.id = id;
     }
 
-    public ItemBuilder named(final ATextComponent name) {
+    public ItemBuilder named(final TextComponent name) {
         this.name = name;
         return this;
     }
 
-    public ItemBuilder lore(final ATextComponent... lore) {
+    public ItemBuilder lore(final TextComponent... lore) {
         Collections.addAll(this.lore, lore);
         return this;
     }
@@ -61,12 +61,12 @@ public class ItemBuilder {
         StructuredItem item = new StructuredItem(rawId, 1);
         item.dataContainer().setIdLookup(Via.getManager().getProtocolManager().getProtocol(Protocol1_21_4To1_21_2.class), false);
         if (this.name != null) {
-            item.dataContainer().set(StructuredDataKey.CUSTOM_NAME, ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(this.name)));
+            item.dataContainer().set(StructuredDataKey.CUSTOM_NAME, ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbtTree(this.name)));
         }
         if (!this.lore.isEmpty()) {
             Tag[] lore = new Tag[this.lore.size()];
             for (int i = 0; i < this.lore.size(); i++) {
-                lore[i] = ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbt(this.lore.get(i)));
+                lore[i] = ViaUtils.convertNbt(ProtocolConstants.TEXT_CODEC.serializeNbtTree(this.lore.get(i)));
             }
             item.dataContainer().set(StructuredDataKey.LORE, lore);
         }

@@ -10,11 +10,10 @@ import com.viaversion.viaversion.api.minecraft.item.data.FilterableString;
 import com.viaversion.viaversion.api.minecraft.item.data.WrittenBook;
 import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import net.lenni0451.mcstructs.core.TextFormatting;
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
+import net.lenni0451.mcstructs.text.TextFormatting;
 import net.lenni0451.mcstructs.text.components.StringComponent;
-import net.lenni0451.mcstructs.text.events.click.ClickEvent;
-import net.lenni0451.mcstructs.text.events.click.ClickEventAction;
+import net.lenni0451.mcstructs.text.events.click.types.OpenUrlClickEvent;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
@@ -105,8 +104,8 @@ public class MainScreen extends Screen {
             PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
                 try {
                     playerConfig.account = new MicrosoftAccount(MicrosoftAccount.DEVICE_CODE_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepMsaDeviceCode.MsaDeviceCodeCallback(code -> {
-                        ATextComponent component = new StringComponent("Please open your browser and visit ").modifyStyle(style -> style.setFormatting(TextFormatting.YELLOW));
-                        component.append(new StringComponent(code.getDirectVerificationUri()).modifyStyle(style -> style.setFormatting(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEventAction.OPEN_URL, code.getDirectVerificationUri()))));
+                        TextComponent component = new StringComponent("Please open your browser and visit ").styled(style -> style.setFormatting(TextFormatting.YELLOW));
+                        component.append(new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setFormatting(TextFormatting.BLUE).setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))));
                         component.append(new StringComponent(" and login with your Microsoft account"));
                         screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
                         screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§bIf the code is not inserted automatically, please enter the code: §a" + code.getUserCode()), false));

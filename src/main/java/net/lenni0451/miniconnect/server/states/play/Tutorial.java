@@ -41,6 +41,15 @@ public class Tutorial {
                     After disconnecting, the account will be logged out.
                     """,
             """
+                    §6§l§oProxy online mode
+                    
+                    If you are using a premium account for joining MiniConnect, you can enable the proxy online mode.
+                    When enabled, MiniConnect settings will be saved between sessions.""",
+            """
+                    §6§l§oConnect
+                    
+                    After setting all required options (server address, version) you can connect by clicking on §2Connect to server§r.""",
+            """
                     §6§l§oDisconnect
                     
                     When on a server, you can type §2/disconnect§r in the chat to disconnect.

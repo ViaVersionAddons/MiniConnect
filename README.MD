@@ -25,9 +25,12 @@ After joining the server, a GUI with settings will open:\
 1. **Set server address**: Enter the address of the server you want to connect to into the chat.
 2. **Set protocol version**: Set the protocol version of the server you want to connect to.
 3. **Login** (optional): Login with your Minecraft account to join premium servers.
-4. **Connect to server**: Connect to the server after setting all options.
-5. **How to use**: A small usage guide.
-6. **Disconnect**: Disconnect from the lobby (same as closing the GUI).
+4. **Proxy online mode**: Enable online mode for your account. This extra verification will be used to save settings between sessions.\
+   After clicking the button, you have 60s to reconnect to the MiniConnect server with a valid Minecraft account.\
+   You can disable this option at any time by clicking the button again.
+5. **Connect to server**: Connect to the server after setting all options.
+6. **How to use**: A small usage guide.
+7. **Disconnect**: Disconnect from the lobby (same as closing the GUI).
 
 After setting all required option (server address and protocol version), click on the `Connect to server` button to connect to the server.\
 If you disconnect from the server, all settings will be reset and you will have to set them again.

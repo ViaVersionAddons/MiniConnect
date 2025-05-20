@@ -1,7 +1,7 @@
 package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.item.Item;
-import com.viaversion.viaversion.api.type.types.version.Types1_21_4;
+import com.viaversion.viaversion.api.type.types.version.VersionedTypes;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ public class S2CSetEquipmentPacket implements Packet {
             Pair<Integer, Item> pair = this.equipment.get(i);
             int slotMask = pair.getLeft();
             byteBuf.writeByte(!last ? slotMask | -128 : slotMask);
-            Types1_21_4.ITEM.write(byteBuf, pair.getRight());
+            VersionedTypes.V1_21_4.item.write(byteBuf, pair.getRight());
         }
     }
 

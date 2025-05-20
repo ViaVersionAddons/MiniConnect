@@ -1,7 +1,7 @@
 package net.lenni0451.miniconnect.server.protocol.packets.play.c2s;
 
 import com.viaversion.viaversion.api.minecraft.item.Item;
-import com.viaversion.viaversion.api.type.types.version.Types1_21_4;
+import com.viaversion.viaversion.api.type.types.version.VersionedTypes;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import lombok.AllArgsConstructor;
@@ -36,10 +36,10 @@ public class C2SContainerClickPacket implements Packet {
         this.modifiedStacks = new HashMap<>();
         for (int i = 0; i < entries; i++) {
             int key = byteBuf.readShort();
-            Item value = Types1_21_4.ITEM.read(byteBuf);
+            Item value = VersionedTypes.V1_21_4.item.read(byteBuf);
             this.modifiedStacks.put(key, value);
         }
-        this.item = Types1_21_4.ITEM.read(byteBuf);
+        this.item = VersionedTypes.V1_21_4.item.read(byteBuf);
     }
 
     @Override

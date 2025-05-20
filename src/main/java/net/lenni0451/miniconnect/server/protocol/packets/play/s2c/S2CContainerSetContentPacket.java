@@ -1,7 +1,7 @@
 package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
 import com.viaversion.viaversion.api.minecraft.item.Item;
-import com.viaversion.viaversion.api.type.types.version.Types1_21_4;
+import com.viaversion.viaversion.api.type.types.version.VersionedTypes;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -26,8 +26,8 @@ public class S2CContainerSetContentPacket implements Packet {
     public void write(ByteBuf byteBuf, int i) {
         PacketTypes.writeVarInt(byteBuf, this.windowId);
         PacketTypes.writeVarInt(byteBuf, this.revision);
-        Types1_21_4.ITEM_ARRAY.write(byteBuf, this.items);
-        Types1_21_4.ITEM.write(byteBuf, this.cursor);
+        VersionedTypes.V1_21_4.itemArray.write(byteBuf, this.items);
+        VersionedTypes.V1_21_4.item.write(byteBuf, this.cursor);
     }
 
 }

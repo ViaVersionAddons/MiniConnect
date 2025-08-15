@@ -24,7 +24,7 @@ import java.util.function.Function;
 public class ProtocolConstants {
 
     public static final ProtocolVersion PROTOCOL_VERSION = ProtocolVersion.v1_21_4;
-    public static final TextComponentCodec TEXT_CODEC = TextComponentCodec.V1_21_2;
+    public static final TextComponentCodec TEXT_CODEC = TextComponentCodec.V1_21_4;
     public static final Map<String, CompoundTag> REGISTRIES;
     public static final Map<String, Map<String, int[]>> TAGS;
     public static final List<String> ITEMS;

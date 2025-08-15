@@ -10,8 +10,10 @@ import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.raphimc.netminecraft.util.MinecraftServerAddress;
 import net.raphimc.viaproxy.ViaProxy;
+import net.raphimc.viaproxy.plugins.events.ConnectEvent;
 import net.raphimc.viaproxy.plugins.events.PreConnectEvent;
 import net.raphimc.viaproxy.plugins.events.ViaProxyLoadedEvent;
+import net.raphimc.viaproxy.proxy.session.UserOptions;
 
 import java.net.InetAddress;
 
@@ -48,6 +50,14 @@ public class RedirectionHandler {
             event.setServerAddress(Main.getInstance().getLobbyServer().getChannel().localAddress());
             event.setServerVersion(ProtocolConstants.PROTOCOL_VERSION);
             event.getClientChannel().attr(AttributeKeys.ENABLE_HAPROXY).set(true); //Enable HAProxy so the lobby server knows the player ip
+        }
+    }
+
+    @EventHandler
+    public void onConnect(final ConnectEvent event) {
+        ConnectionInfo connectionInfo = event.getProxyConnection().getC2P().attr(AttributeKeys.CONNECTION_INFO).get();
+        if (connectionInfo != null) {
+            event.getProxyConnection().setUserOptions(new UserOptions(null, connectionInfo.account()));
         }
     }
 

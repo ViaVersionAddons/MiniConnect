@@ -35,6 +35,7 @@ public class LobbyPacketRegistry extends DefaultPacketRegistry {
         this.registerPacket(MCPackets.S2C_OPEN_BOOK, S2COpenBookPacket::new);
         this.registerPacket(MCPackets.S2C_SET_EQUIPMENT, S2CSetEquipmentPacket::new);
         this.registerPacket(MCPackets.S2C_CONTAINER_SET_DATA, S2CContainerSetDataPacket::new);
+        this.registerPacket(MCPackets.S2C_PLAYER_ABILITIES, S2CPlayerAbilitiesPacket::new);
     }
 
 }

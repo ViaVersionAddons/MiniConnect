@@ -28,6 +28,7 @@ public class PlayStateHandler extends StateHandler {
 
     private void init() {
         this.send(new S2CLoginPacket(0, false, 1, 1, 1, false, false, false, 3, "minecraft:the_end", 0, 3, 0, false, false, null, 0, 0, false));
+        this.send(new S2CPlayerAbilitiesPacket(true, true, true, false, 0, 0));
         this.send(new S2CGameEventPacket(GameEventType.LEVEL_CHUNKS_LOAD_START.ordinal(), 0));
         for (int i = 0; i < 9; i++) {
             Chunk chunk = new Chunk1_18(i % 3, i / 3, new ChunkSection[ProtocolConstants.CHUNK_SECTION_COUNT], new CompoundTag(), new ArrayList<>());

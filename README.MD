@@ -17,7 +17,7 @@ Since ViaProxy is now responsible for the connection handling and version transl
 Download the latest release from the [releases page](https://github.com/ViaVersionAddons/MiniConnect/releases) and put it into the `plugins` folder of your ViaProxy server.
 > [!NOTE]
 > After installing the plugin, ViaProxy will no longer function as a normal proxy server! The plugin will also change some config options of ViaProxy to make it work properly.\
-> This can always be reverted by removing the plugin from the `plugins` folder and changing the config options back to their original values.\
+> This can always be reverted by removing the plugin from the `plugins` folder and changing the config options back to their original values.
 
 The plugin itself does not have any configuration options.
 

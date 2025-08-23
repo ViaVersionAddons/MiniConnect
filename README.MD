@@ -46,7 +46,7 @@ This will retain all settings and you can immediately connect to another server.
 
 ### Wildcard Domain Support
 If the MiniConnect server supports wildcard domains, you can use the ViaProxy wildcard syntax to pre-fill the server address and version.\
-Examples:\
+Examples:
 - Format 1:\
   `address_port_version.viaproxy.hostname` e.g. `server.example.com_25565_1.8.viaproxy.example.com`\
 - Format 2:\

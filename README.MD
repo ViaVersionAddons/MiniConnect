@@ -30,13 +30,14 @@ After joining the server, a GUI with settings will open:\
 4. **Proxy online mode**: Enable online mode for your account. This extra verification will be used to save settings between sessions.\
    After clicking the button, you have 60s to reconnect to the MiniConnect server with a valid Minecraft account.\
    You can disable this option at any time by clicking the button again.
-   > [!WARNING]
-   > This also saves your logged in Minecraft account information.\
-   > Your data will be encrypted, but make sure you trust the MiniConnect server you are enabling this option on.\
-   > Malicious servers can circumvent this encryption and access your data.
 5. **Connect to server**: Connect to the server after setting all options.
 6. **How to use**: A small usage guide.
 7. **Disconnect**: Disconnect from the lobby (same as closing the GUI).
+
+> [!IMPORTANT]
+> Enabling online mode also saves your logged in Minecraft account information (access token).\
+> Your data will be encrypted, but make sure you trust the MiniConnect server you are enabling this option on.\
+> Malicious servers can circumvent this encryption and access your data.
 
 After setting all required option (server address and protocol version), click on the `Connect to server` button to connect to the server.\
 Unless online mode is enabled, all settings will be lost on disconnect and you will have to set them again.

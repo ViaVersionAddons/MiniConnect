@@ -46,7 +46,10 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
         this.playerConfig.handshakeAddress = handshakeData.host();
         this.playerConfig.handshakePort = handshakeData.port();
         this.playerConfig.clientVersion = handshakeData.clientVersion();
-        this.checkHandshakeAddress();
+        if (previousConnectionInfo == null) {
+            //Only check the handshake address if it's the initial connection and not a /disconnect reconnect
+            this.checkHandshakeAddress();
+        }
     }
 
     public PlayerConfig getPlayerConfig() {

@@ -55,7 +55,13 @@ public class Tutorial {
                     When on a server, you can type §2/disconnect§r in the chat to disconnect.
                     After disconnecting, you will automatically be placed into the lobby again.
                     All your settings will be retained until you disconnect.
-                    """
+                    """,
+            """
+                    §6§l§oWildcard domains
+                    
+                    MiniConnect supports the same wildcard domain format as ViaProxy itself.
+                    Example: §2example.com_25565_1.8.viaproxy.example.com
+                    This autofills the server address and version automatically."""
     );
 
     private static FilterableComponent[] buildTutorial(final String... pages) {

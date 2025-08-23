@@ -13,8 +13,10 @@ import net.lenni0451.miniconnect.server.states.*;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.Packet;
+import net.raphimc.viaproxy.util.WildcardDomainParser;
 import net.raphimc.viaproxy.util.logging.Logger;
 
+import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +46,7 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
         this.playerConfig.handshakeAddress = handshakeData.host();
         this.playerConfig.handshakePort = handshakeData.port();
         this.playerConfig.clientVersion = handshakeData.clientVersion();
+        this.checkHandshakeAddress();
     }
 
     public PlayerConfig getPlayerConfig() {
@@ -87,6 +90,27 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
         if (cause instanceof ClosedChannelException) return;
         cause.printStackTrace();
         ctx.close();
+    }
+
+    private void checkHandshakeAddress() {
+        String handshakeAddress = this.playerConfig.handshakeAddress;
+        if (handshakeAddress.toLowerCase().contains("f2.viaproxy.")) { // Format 2: address.<address>.port.<port>.version.<version>.f2.viaproxy.hostname
+            WildcardDomainParser.ParsedDomain parsedDomain = WildcardDomainParser.parseFormat2(handshakeAddress);
+            if (parsedDomain != null && parsedDomain.version() != null) {
+                InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
+                this.playerConfig.serverAddress = socketAddress.getHostString();
+                this.playerConfig.serverPort = socketAddress.getPort();
+                this.playerConfig.targetVersion = parsedDomain.version();
+            }
+        } else if (handshakeAddress.toLowerCase().contains("viaproxy.")) { // Format 1: address_port_version.viaproxy.hostname
+            WildcardDomainParser.ParsedDomain parsedDomain = WildcardDomainParser.parseFormat1(handshakeAddress);
+            if (parsedDomain != null && parsedDomain.version() != null) {
+                InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
+                this.playerConfig.serverAddress = socketAddress.getHostString();
+                this.playerConfig.serverPort = socketAddress.getPort();
+                this.playerConfig.targetVersion = parsedDomain.version();
+            }
+        }
     }
 
 }

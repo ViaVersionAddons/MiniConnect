@@ -1,0 +1,23 @@
+def prepareTask = tasks.register("prepareViaProxyFiles", Copy) {
+    dependsOn(tasks.jar)
+
+    def projectName = project.name
+    from(tasks.jar.archiveFile)
+    into(file("run/plugins"))
+    rename { "${projectName}.jar" }
+}
+
+def cleanupTask = tasks.register("cleanupViaProxyFiles", Delete) {
+    delete(file("run/plugins/${project.name}.jar"))
+    delete(file("run/logs"))
+}
+
+tasks.register("runViaProxy", JavaExec) {
+    dependsOn(prepareTask)
+    finalizedBy(cleanupTask)
+
+    mainClass = "net.raphimc.viaproxy.ViaProxy"
+    classpath = sourceSets.main.compileClasspath
+    workingDir = file("run")
+    jvmArgs = ["-DskipUpdateCheck"]
+}

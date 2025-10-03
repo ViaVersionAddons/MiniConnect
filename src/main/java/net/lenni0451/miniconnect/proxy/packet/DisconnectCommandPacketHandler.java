@@ -22,15 +22,18 @@ import java.util.Locale;
 
 public class DisconnectCommandPacketHandler extends PacketHandler {
 
-    private final int packetId;
+    private final int chatOrChatCommand;
+    private final int chatCommandSignedId;
 
     public DisconnectCommandPacketHandler(final ProxyConnection proxyConnection) {
         super(proxyConnection);
 
         if (proxyConnection.getClientVersion().newerThanOrEqualTo(ProtocolVersion.v1_19)) {
-            this.packetId = MCPackets.C2S_CHAT_COMMAND.getId(proxyConnection.getClientVersion().getVersion());
+            this.chatOrChatCommand = MCPackets.C2S_CHAT_COMMAND.getId(proxyConnection.getClientVersion().getVersion());
+            this.chatCommandSignedId = MCPackets.C2S_CHAT_COMMAND_SIGNED.getId(proxyConnection.getClientVersion().getVersion());
         } else {
-            this.packetId = MCPackets.C2S_CHAT.getId(proxyConnection.getClientVersion().getVersion());
+            this.chatOrChatCommand = MCPackets.C2S_CHAT.getId(proxyConnection.getClientVersion().getVersion());
+            this.chatCommandSignedId = -1;
         }
     }
 
@@ -38,7 +41,7 @@ public class DisconnectCommandPacketHandler extends PacketHandler {
     public boolean handleC2P(Packet packet, List<ChannelFutureListener> listeners) {
         if (!this.proxyConnection.getC2pConnectionState().equals(ConnectionState.PLAY)) return true;
         if (!(packet instanceof UnknownPacket unknownPacket)) return true;
-        if (unknownPacket.packetId != this.packetId) return true;
+        if (unknownPacket.packetId != this.chatOrChatCommand && unknownPacket.packetId != this.chatCommandSignedId) return true;
 
         ByteBuf buf = Unpooled.wrappedBuffer(unknownPacket.data);
         String message = PacketTypes.readString(buf, 256);

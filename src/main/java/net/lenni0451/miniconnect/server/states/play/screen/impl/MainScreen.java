@@ -61,7 +61,7 @@ public class MainScreen extends Screen {
             }
         }).get(), () -> {
             screenHandler.closeScreen();
-            screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aPlease enter the server ip into the chat (with optional port) (e.g. example.com, example.com:25565"), false));
+            screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aPlease enter the server ip into the chat (with optional port) (e.g. example.com, example.com:25565)"), false));
             playerConfig.chatListener = s -> {
                 if (s.startsWith("/")) {
                     screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cCancelled input"), false));

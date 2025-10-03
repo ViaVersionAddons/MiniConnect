@@ -1,11 +1,10 @@
 package net.lenni0451.miniconnect.server.protocol.packets.play.s2c;
 
-import com.viaversion.viaversion.api.minecraft.GlobalBlockPosition;
-import com.viaversion.viaversion.api.type.Types;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
+import net.lenni0451.miniconnect.server.protocol.packets.model.CommonPlayerSpawnInfo;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
@@ -21,16 +20,7 @@ public class S2CLoginPacket implements Packet {
     public boolean reduceDebugInfo;
     public boolean showDeathScreen;
     public boolean doLimitedCrafting;
-    public int dimension;
-    public String world;
-    public long levelSeed;
-    public int gamemode;
-    public int previousGamemode;
-    public boolean debugWorld;
-    public boolean flatWorld;
-    public GlobalBlockPosition lastDeath;
-    public int portalCooldown;
-    public int seaLevel;
+    public CommonPlayerSpawnInfo spawnInfo;
     public boolean enforceSecureChat;
 
     @Override
@@ -52,16 +42,7 @@ public class S2CLoginPacket implements Packet {
         byteBuf.writeBoolean(this.reduceDebugInfo);
         byteBuf.writeBoolean(this.showDeathScreen);
         byteBuf.writeBoolean(this.doLimitedCrafting);
-        PacketTypes.writeVarInt(byteBuf, this.dimension);
-        PacketTypes.writeString(byteBuf, this.world);
-        byteBuf.writeLong(this.levelSeed);
-        byteBuf.writeByte(this.gamemode);
-        byteBuf.writeByte(this.previousGamemode);
-        byteBuf.writeBoolean(this.debugWorld);
-        byteBuf.writeBoolean(this.flatWorld);
-        Types.OPTIONAL_GLOBAL_POSITION.write(byteBuf, this.lastDeath);
-        PacketTypes.writeVarInt(byteBuf, this.portalCooldown);
-        PacketTypes.writeVarInt(byteBuf, this.seaLevel);
+        this.spawnInfo.write(byteBuf);
         byteBuf.writeBoolean(this.enforceSecureChat);
     }
 

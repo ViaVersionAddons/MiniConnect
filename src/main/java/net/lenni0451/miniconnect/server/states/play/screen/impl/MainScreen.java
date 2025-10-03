@@ -17,16 +17,15 @@ import net.lenni0451.mcstructs.text.events.click.types.OpenUrlClickEvent;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
-import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CContainerSetContentPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2COpenBookPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CSystemChatPacket;
-import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CTransferPacket;
+import net.lenni0451.miniconnect.server.protocol.packets.model.CommonPlayerSpawnInfo;
+import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
 import net.lenni0451.miniconnect.server.states.play.Tutorial;
 import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
 import net.lenni0451.miniconnect.server.states.play.screen.Items;
 import net.lenni0451.miniconnect.server.states.play.screen.Screen;
 import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
+import net.lenni0451.miniconnect.utils.GeyserAPI;
 import net.lenni0451.miniconnect.utils.InetUtils;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
@@ -72,6 +71,18 @@ public class MainScreen extends Screen {
                         if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new IllegalArgumentException();
                         playerConfig.serverAddress = hostAndPort.getHost();
                         playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
+                        if (GeyserAPI.isGeyserPlayer(playerConfig.uuid)) {
+                            //Respawn the player two times to force the chat to close
+                            //This only needs to be done because bedrock doesn't allow closing the chat otherwise
+                            CommonPlayerSpawnInfo spawnInfo = ProtocolConstants.DEFAULT_SPAWN_INFO.copy();
+                            spawnInfo.dimension = 2;
+                            spawnInfo.world = "minecraft:the_nether";
+                            spawnInfo.previousGamemode = 3;
+                            screenHandler.getStateHandler().send(new S2CRespawnPacket(spawnInfo, S2CRespawnPacket.KEEP_ALL_DATA));
+                            ProtocolConstants.sendSpawnInfo(screenHandler.getStateHandler());
+                            screenHandler.getStateHandler().send(new S2CRespawnPacket(ProtocolConstants.DEFAULT_SPAWN_INFO, S2CRespawnPacket.KEEP_ALL_DATA));
+                            ProtocolConstants.sendSpawnInfo(screenHandler.getStateHandler());
+                        }
                     } catch (Throwable t) {
                         screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
                         return false;

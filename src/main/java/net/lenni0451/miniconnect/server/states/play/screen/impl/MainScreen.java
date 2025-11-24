@@ -28,13 +28,16 @@ import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.lenni0451.miniconnect.utils.GeyserAPI;
 import net.lenni0451.miniconnect.utils.InetUtils;
 import net.raphimc.minecraftauth.MinecraftAuth;
-import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
+import net.raphimc.minecraftauth.java.JavaAuthManager;
+import net.raphimc.minecraftauth.msa.model.MsaDeviceCode;
+import net.raphimc.minecraftauth.msa.service.impl.DeviceCodeMsaAuthService;
 import net.raphimc.netminecraft.packet.impl.play.S2CPlayDisconnectPacket;
 import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
 import net.raphimc.viaproxy.util.logging.Logger;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.item;
 
@@ -114,13 +117,13 @@ public class MainScreen extends Screen {
             screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aLoading, please wait..."), false));
             PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
                 try {
-                    playerConfig.account = new MicrosoftAccount(MicrosoftAccount.DEVICE_CODE_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepMsaDeviceCode.MsaDeviceCodeCallback(code -> {
+                    playerConfig.account = new MicrosoftAccount(JavaAuthManager.create(MinecraftAuth.createHttpClient()).login(DeviceCodeMsaAuthService::new, (Consumer<MsaDeviceCode>) code -> {
                         TextComponent component = new StringComponent("Please open your browser and visit ").styled(style -> style.setFormatting(TextFormatting.YELLOW));
                         component.append(new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setFormatting(TextFormatting.BLUE).setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))));
                         component.append(new StringComponent(" and login with your Microsoft account"));
                         screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
                         screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§bIf the code is not inserted automatically, please enter the code: §a" + code.getUserCode()), false));
-                    })));
+                    }));
                     screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aSuccessfully logged in"), false));
                 } catch (InterruptedException e) {
                     return;

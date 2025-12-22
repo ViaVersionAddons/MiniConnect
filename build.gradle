@@ -18,7 +18,6 @@ repositories {
 
 dependencies {
     compileOnly libs.viaproxy
-    include libs.commonsGson
 
     compileOnly libs.findbugs
     compileOnly libs.jetbrainsAnnotations

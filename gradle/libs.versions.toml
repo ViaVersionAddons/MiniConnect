@@ -4,7 +4,7 @@
 findbugs = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
 jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
 lombok = { module = "org.projectlombok:lombok", version = "1.18.38" }
-viaproxy = { module = "net.raphimc:ViaProxy", version = "3.4.8-SNAPSHOT" }
+viaproxy = { module = "net.raphimc:ViaProxy", version = "3.4.9-SNAPSHOT" }
 
 junit-bom = { module = "org.junit:junit-bom", version = "5.13.1" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }

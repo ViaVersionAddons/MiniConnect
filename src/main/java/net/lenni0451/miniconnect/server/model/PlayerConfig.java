@@ -23,6 +23,11 @@ public class PlayerConfig {
 
     private static final AESEncryption ENCRYPTION = new AESEncryption();
 
+    public static File baseDir() {
+        return new File(Main.getInstance().getDataFolder(), "online_mode_settings");
+    }
+
+
     public final UUID uuid;
     @Nullable
     public String serverAddress;
@@ -57,7 +62,7 @@ public class PlayerConfig {
 
     public void load() throws Exception {
         String hashedUUID = UUIDUtils.hash(this.uuid);
-        File settingsFile = new File(Main.getInstance().getDataFolder(), hashedUUID + ".dat");
+        File settingsFile = new File(PlayerConfig.baseDir(), hashedUUID + ".dat");
         if (!settingsFile.exists()) return;
         this.isSaved = true;
 
@@ -74,7 +79,7 @@ public class PlayerConfig {
 
     public void save() throws Exception {
         String hashedUUID = UUIDUtils.hash(this.uuid);
-        File settingsFile = new File(Main.getInstance().getDataFolder(), hashedUUID + ".dat");
+        File settingsFile = new File(PlayerConfig.baseDir(), hashedUUID + ".dat");
         settingsFile.getParentFile().mkdirs();
         this.isSaved = true;
 
@@ -91,7 +96,7 @@ public class PlayerConfig {
 
     public void delete() {
         String hashedUUID = UUIDUtils.hash(this.uuid);
-        File settingsFile = new File(Main.getInstance().getDataFolder(), hashedUUID + ".dat");
+        File settingsFile = new File(PlayerConfig.baseDir(), hashedUUID + ".dat");
         if (settingsFile.exists()) settingsFile.delete();
         this.isSaved = false;
     }

@@ -9,10 +9,7 @@ import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.miniconnect.server.protocol.packets.play.c2s.C2SContainerButtonClickPacket;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.S2CContainerSetDataPacket;
 import net.lenni0451.miniconnect.server.states.play.Tutorial;
-import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
-import net.lenni0451.miniconnect.server.states.play.screen.Items;
-import net.lenni0451.miniconnect.server.states.play.screen.Screen;
-import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.lenni0451.miniconnect.server.states.play.screen.*;
 
 import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.item;
 
@@ -22,7 +19,7 @@ public class TutorialScreen extends Screen {
     private int currentPage;
 
     public TutorialScreen() {
-        super(new StringComponent("MiniConnect Tutorial"), 17, 1);
+        super(new StringComponent(Messages.TutorialScreen.Title), 17, 1);
     }
 
     @Override

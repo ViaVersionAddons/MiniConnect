@@ -11,7 +11,6 @@ import com.viaversion.viaversion.api.minecraft.item.data.WrittenBook;
 import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.mcstructs.text.TextComponent;
-import net.lenni0451.mcstructs.text.TextFormatting;
 import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.mcstructs.text.events.click.types.OpenUrlClickEvent;
 import net.lenni0451.miniconnect.Main;
@@ -20,10 +19,7 @@ import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.server.protocol.packets.model.CommonPlayerSpawnInfo;
 import net.lenni0451.miniconnect.server.protocol.packets.play.s2c.*;
 import net.lenni0451.miniconnect.server.states.play.Tutorial;
-import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
-import net.lenni0451.miniconnect.server.states.play.screen.Items;
-import net.lenni0451.miniconnect.server.states.play.screen.Screen;
-import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.lenni0451.miniconnect.server.states.play.screen.*;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
 import net.lenni0451.miniconnect.utils.GeyserAPI;
 import net.lenni0451.miniconnect.utils.InetUtils;
@@ -44,7 +40,7 @@ import static net.lenni0451.miniconnect.server.states.play.screen.ItemBuilder.it
 public class MainScreen extends Screen {
 
     public MainScreen() {
-        super(new StringComponent("§aMiniConnect"), 4);
+        super(new StringComponent(Messages.MainScreen.Title), 4);
     }
 
     @Override
@@ -54,19 +50,24 @@ public class MainScreen extends Screen {
         boolean hasVersion = playerConfig.targetVersion != null;
         boolean hasAccount = playerConfig.account != null;
 
-        itemList.set(11, item(Items.NAMETAG).named(new StringComponent("§aSet server address")).setGlint(hasAddress).calculate(builder -> {
-            builder.lore(new StringComponent("§bClick to set the server address to connect to"));
+        itemList.set(11, item(Items.NAMETAG).named(new StringComponent(Messages.MainScreen.SetServerAddress.ItemName)).setGlint(hasAddress).calculate(builder -> {
+            builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLore));
             if (hasAddress) {
-                builder.lore(new StringComponent("§aAddress: §6" + playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
+                String address = playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort));
+                builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, address));
             } else {
-                builder.lore(new StringComponent("§cNo address set (required)"));
+                builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreNoAddressSet));
             }
         }).get(), () -> {
             screenHandler.closeScreen();
-            screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aPlease enter the server ip into the chat (with optional port) (e.g. example.com, example.com:25565)"), false));
+            for (TextComponent component : Messages.format(Messages.MainScreen.SetServerAddress.ChatInfo)) {
+                screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+            }
             playerConfig.chatListener = s -> {
                 if (s.startsWith("/")) {
-                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cCancelled input"), false));
+                    for (TextComponent component : Messages.format(Messages.MainScreen.SetServerAddress.ChatCancelled)) {
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                    }
                 } else {
                     try {
                         HostAndPort hostAndPort = HostAndPort.fromString(s);
@@ -87,7 +88,9 @@ public class MainScreen extends Screen {
                             ProtocolConstants.sendSpawnInfo(screenHandler.getStateHandler());
                         }
                     } catch (Throwable t) {
-                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cInvalid server address"), false));
+                        for (TextComponent component : Messages.format(Messages.MainScreen.SetServerAddress.ChatInvalidAddress)) {
+                            screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                        }
                         return false;
                     }
                 }
@@ -95,59 +98,67 @@ public class MainScreen extends Screen {
                 return true;
             };
         });
-        itemList.set(12, item(Items.ANVIL).named(new StringComponent("§aSet protocol version")).setGlint(hasVersion).calculate(builder -> {
-            builder.lore(new StringComponent("§bClick to set the protocol version to connect with"));
+        itemList.set(12, item(Items.ANVIL).named(new StringComponent(Messages.MainScreen.SetProtocolVersion.ItemName)).setGlint(hasVersion).calculate(builder -> {
+            builder.lore(Messages.format(Messages.MainScreen.SetProtocolVersion.ItemLore));
             if (hasVersion) {
-                builder.lore(new StringComponent("§aVersion: §6" + playerConfig.targetVersion.getName()));
+                builder.lore(Messages.format(Messages.MainScreen.SetProtocolVersion.ItemLoreVersionSet, playerConfig.targetVersion.getName()));
             } else {
-                builder.lore(new StringComponent("§cNo version set (required)"));
+                builder.lore(Messages.format(Messages.MainScreen.SetProtocolVersion.ItemLoreNoVersionSet));
             }
         }).get(), () -> {
             screenHandler.openScreen(new VersionSelectorScreen(0));
         });
-        itemList.set(13, item(Items.TRIAL_KEY).named(new StringComponent("§aLogin")).setGlint(hasAccount).calculate(builder -> {
-            builder.lore(new StringComponent("§bClick to login with your Microsoft account"));
+        itemList.set(13, item(Items.TRIAL_KEY).named(new StringComponent(Messages.MainScreen.Login.ItemName)).setGlint(hasAccount).calculate(builder -> {
+            builder.lore(Messages.format(Messages.MainScreen.Login.ItemLore));
             if (hasAccount) {
-                builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
+                builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreLoggedIn, playerConfig.account.getDisplayString()));
             } else {
-                builder.lore(new StringComponent("§cNot logged in"));
+                builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreNotLoggedIn));
             }
         }).get(), () -> {
             screenHandler.closeScreen();
-            screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aLoading, please wait..."), false));
+            for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoading)) {
+                screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+            }
             PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
                 try {
                     playerConfig.account = new MicrosoftAccount(JavaAuthManager.create(MinecraftAuth.createHttpClient()).login(DeviceCodeMsaAuthService::new, (Consumer<MsaDeviceCode>) code -> {
-                        TextComponent component = new StringComponent("Please open your browser and visit ").styled(style -> style.setFormatting(TextFormatting.YELLOW));
-                        component.append(new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setFormatting(TextFormatting.BLUE).setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))));
-                        component.append(new StringComponent(" and login with your Microsoft account"));
-                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
-                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§bIf the code is not inserted automatically, please enter the code: §a" + code.getUserCode()), false));
+                        for (TextComponent component : Messages.format(
+                                Messages.MainScreen.Login.ChatCodeLogin,
+                                new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))),
+                                code.getUserCode()
+                        )) {
+                            screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                        }
                     }));
-                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§aSuccessfully logged in"), false));
+                    for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginSuccess)) {
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                    }
                 } catch (InterruptedException e) {
                     return;
                 } catch (Throwable t) {
                     if (!(t instanceof TimeoutException)) {
                         t.printStackTrace();
                     }
-                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cLogin failed: " + t.getMessage()), false));
+                    for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginFailed, t.getMessage())) {
+                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                    }
                 }
                 screenHandler.openScreen(this);
             });
             screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
         });
-        itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent("§aConnect to server")).setGlint(hasAddress && hasVersion).calculate(builder -> {
-            builder.lore(new StringComponent("§bClick to connect to the server"));
-            if (!hasAddress) builder.lore(new StringComponent("§cNo address set (required)"));
-            if (!hasVersion) builder.lore(new StringComponent("§cNo version set (required)"));
+        itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent(Messages.MainScreen.ConnectToServer.ItemName)).setGlint(hasAddress && hasVersion).calculate(builder -> {
+            builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLore));
+            if (!hasAddress) builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreNoAddress));
+            if (!hasVersion) builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreNoVersion));
             if (!hasAddress || !hasVersion) {
-                builder.lore(new StringComponent("§cYou need to set all options before connecting"));
+                builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreMissingRequirements));
                 return;
             }
-            builder.lore(new StringComponent("§aAddress: §6" + playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
-            builder.lore(new StringComponent("§aVersion: §6" + playerConfig.targetVersion.getName()));
-            if (hasAccount) builder.lore(new StringComponent("§aLogged in as: §6" + playerConfig.account.getDisplayString()));
+            builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
+            builder.lore(Messages.format(Messages.MainScreen.SetProtocolVersion.ItemLoreVersionSet, playerConfig.targetVersion.getName()));
+            if (hasAccount) builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreLoggedIn, playerConfig.account.getDisplayString()));
         }).get(), () -> {
             if (hasAddress && hasVersion) {
                 if (playerConfig.isSaved) {
@@ -162,20 +173,18 @@ public class MainScreen extends Screen {
                 Main.getInstance().getStateRegistry().getChangeHandshakeIntent().add(channelAddress);
                 screenHandler.getStateHandler().send(new S2CTransferPacket(playerConfig.handshakeAddress, playerConfig.handshakePort));
             } else {
-                screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§cYou need to set all options before connecting"), false));
+                for (TextComponent component : Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreMissingRequirements)) {
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                }
             }
         });
         itemList.set(20, item(Items.ENDER_CHEST).setGlint(playerConfig.isSaved).calculate(builder -> {
             if (playerConfig.isSaved) {
-                builder.named(new StringComponent("§aViaProxy online mode §a§lEnabled"));
-                builder.lore(new StringComponent("§bOnline mode is enabled"));
-                builder.lore(new StringComponent("§bAll settings are saved between sessions"));
-                builder.lore(new StringComponent("§6Click again to disable online mode"));
+                builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameEnabled));
+                builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreEnabled));
             } else {
-                builder.named(new StringComponent("§aViaProxy online mode §c§lDisabled"));
-                builder.lore(new StringComponent("§bRequire a premium account to join ViaProxy"));
-                builder.lore(new StringComponent("§bYou need to reconnect with your account for verification"));
-                builder.lore(new StringComponent("§6If enabled, your settings will be saved between sessions"));
+                builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameDisabled));
+                builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreDisabled));
             }
         }).get(), () -> {
             if (playerConfig.isSaved) {
@@ -183,20 +192,18 @@ public class MainScreen extends Screen {
                 screenHandler.openScreen(new MainScreen());
             } else {
                 Main.getInstance().getStateRegistry().getVerificationQueue().add(playerConfig.uuid);
-                screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("""
-                        §aIn order to verify your online mode status, please reconnect within 60 seconds.
-                        §aIf you connect with a premium account, storage persistence will be enabled.
-                        §aIf you fail the verification, your account will stay in offline mode.
-                        §aAfter enabling online mode, you can disable it at any time by clicking the item again.""")));
+                screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.ProxyOnlineMode.DisconnectMessage)));
             }
         });
 
-        itemList.set(27, item(Items.BOOK).named(new StringComponent("§6How to use")).get(), () -> {
+        itemList.set(27, item(Items.BOOK).named(new StringComponent(Messages.MainScreen.HowToUse.ItemName)).get(), () -> {
             if (playerConfig.clientVersion.newerThanOrEqualTo(ProtocolVersion.v1_19)) {
                 screenHandler.openScreen(new TutorialScreen());
             } else {
                 screenHandler.closeScreen();
-                screenHandler.getStateHandler().send(new S2CSystemChatPacket(new StringComponent("§6§lType anything in chat to open the UI again"), false));
+                for (TextComponent component : Messages.format(Messages.MainScreen.HowToUse.ChatReopenInfo)) {
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                }
                 StructuredItem book = new StructuredItem(ProtocolConstants.ITEMS.indexOf(Items.WRITTEN_BOOK), 1, new StructuredDataContainer());
                 book.dataContainer().setIdLookup(ProtocolConstants.VIA_PROTOCOL, false);
                 book.dataContainer().set(StructuredDataKey.WRITTEN_BOOK_CONTENT, new WrittenBook(
@@ -217,15 +224,15 @@ public class MainScreen extends Screen {
                 };
             }
         });
-        itemList.set(35, item(Items.BARRIER).named(new StringComponent("§cDisconnect")).get(), () -> {
-            screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
+        itemList.set(35, item(Items.BARRIER).named(new StringComponent(Messages.MainScreen.Disconnect.ItemName)).get(), () -> {
+            screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.Disconnect.DisconnectMessage)));
         });
     }
 
     @Override
     public void close(ScreenHandler screenHandler) {
         //Count closing the screen as a disconnect
-        screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent("Manual Disconnect")));
+        screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.Disconnect.DisconnectMessage)));
     }
 
 }

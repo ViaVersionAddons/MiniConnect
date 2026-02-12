@@ -3,10 +3,7 @@ package net.lenni0451.miniconnect.server.states.play.screen.impl;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
-import net.lenni0451.miniconnect.server.states.play.screen.ItemList;
-import net.lenni0451.miniconnect.server.states.play.screen.Items;
-import net.lenni0451.miniconnect.server.states.play.screen.Screen;
-import net.lenni0451.miniconnect.server.states.play.screen.ScreenHandler;
+import net.lenni0451.miniconnect.server.states.play.screen.*;
 import net.raphimc.viabedrock.api.BedrockProtocolVersion;
 import net.raphimc.vialegacy.api.LegacyProtocolVersion;
 
@@ -21,7 +18,7 @@ public class VersionSelectorScreen extends Screen {
     private final int page;
 
     public VersionSelectorScreen(final int page) {
-        super(new StringComponent("§aSelect Version"), 6);
+        super(new StringComponent(Messages.VersionSelectorScreen.Title), 6);
         this.page = page;
     }
 
@@ -51,18 +48,18 @@ public class VersionSelectorScreen extends Screen {
         if (this.page == 0) {
             itemList.set(45, item(Items.GRAY_STAINED_GLASS_PANE).named(new StringComponent(" ")).get());
         } else {
-            itemList.set(45, item(Items.ARROW).named(new StringComponent("§aPrevious Page")).get(), () -> {
+            itemList.set(45, item(Items.ARROW).named(new StringComponent(Messages.VersionSelectorScreen.PreviousPage)).get(), () -> {
                 screenHandler.openScreen(new VersionSelectorScreen(this.page - 1));
             });
         }
         for (int i = 46; i <= 52; i++) {
             itemList.set(i, item(Items.GRAY_STAINED_GLASS_PANE).named(new StringComponent(" ")).get());
         }
-        itemList.set(49, item(Items.ENDER_PEARL).named(new StringComponent("§cBack")).get(), () -> {
+        itemList.set(49, item(Items.ENDER_PEARL).named(new StringComponent(Messages.VersionSelectorScreen.Back)).get(), () -> {
             screenHandler.openScreen(new MainScreen());
         });
         if (ProtocolVersion.getProtocols().size() > (this.page + 1) * 45) {
-            itemList.set(53, item(Items.ARROW).named(new StringComponent("§aNext Page")).get(), () -> {
+            itemList.set(53, item(Items.ARROW).named(new StringComponent(Messages.VersionSelectorScreen.NextPage)).get(), () -> {
                 screenHandler.openScreen(new VersionSelectorScreen(this.page + 1));
             });
         } else {

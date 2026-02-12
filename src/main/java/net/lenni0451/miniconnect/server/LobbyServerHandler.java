@@ -102,7 +102,6 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
             if (parsedDomain != null && parsedDomain.version() != null) {
                 InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
                 this.playerConfig.serverAddress = socketAddress.getHostString();
-                this.playerConfig.serverPort = socketAddress.getPort();
                 this.playerConfig.targetVersion = parsedDomain.version();
             }
         } else if (handshakeAddress.toLowerCase().contains("viaproxy.")) { // Format 1: address_port_version.viaproxy.hostname
@@ -110,7 +109,6 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
             if (parsedDomain != null && parsedDomain.version() != null) {
                 InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
                 this.playerConfig.serverAddress = socketAddress.getHostString();
-                this.playerConfig.serverPort = socketAddress.getPort();
                 this.playerConfig.targetVersion = parsedDomain.version();
             }
         }

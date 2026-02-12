@@ -3,14 +3,12 @@ package net.lenni0451.miniconnect.server.model;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.commons.gson.GsonParser;
 import net.lenni0451.commons.gson.elements.GsonObject;
-import net.lenni0451.commons.gson.elements.GsonPrimitive;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.utils.AESEncryption;
 import net.lenni0451.miniconnect.utils.UUIDUtils;
 import net.raphimc.viaproxy.saves.impl.accounts.Account;
 import net.raphimc.viaproxy.saves.impl.accounts.MicrosoftAccount;
-import net.raphimc.viaproxy.util.AddressUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -32,8 +30,6 @@ public class PlayerConfig {
     @Nullable
     public String serverAddress;
     @Nullable
-    public Integer serverPort;
-    @Nullable
     public ProtocolVersion targetVersion;
     @Nullable
     public Account account;
@@ -49,15 +45,13 @@ public class PlayerConfig {
     }
 
     public void applyConnectionInfo(final ConnectionInfo connectionInfo) {
-        this.serverAddress = connectionInfo.host();
-        this.serverPort = connectionInfo.port();
+        this.serverAddress = connectionInfo.address();
         this.targetVersion = connectionInfo.protocolVersion();
         this.account = connectionInfo.account();
     }
 
     public ConnectionInfo toConnectionInfo() {
-        int serverPort = this.serverPort == null || this.serverPort == -1 ? AddressUtil.getDefaultPort(this.targetVersion) : this.serverPort;
-        return new ConnectionInfo(this.handshakeAddress, this.handshakePort, this.serverAddress, serverPort, this.targetVersion, this.account);
+        return new ConnectionInfo(this.handshakeAddress, this.handshakePort, this.serverAddress, this.targetVersion, this.account);
     }
 
     public void load() throws Exception {
@@ -72,7 +66,6 @@ public class PlayerConfig {
         String json = new String(decryptedData, StandardCharsets.UTF_8);
         GsonObject object = GsonParser.parse(json).asObject();
         this.serverAddress = object.getString("serverAddress", null);
-        this.serverPort = object.optPrimitive("serverPort").map(GsonPrimitive::asInt).orElse(null);
         this.targetVersion = object.optPrimitive("targetVersion").map(p -> ProtocolVersion.getProtocol(p.asInt())).orElse(null);
         this.account = object.optObject("account").map(GsonObject::getJsonObject).map(MicrosoftAccount::new).orElse(null);
     }
@@ -85,7 +78,6 @@ public class PlayerConfig {
 
         GsonObject object = new GsonObject();
         if (this.serverAddress != null) object.add("serverAddress", this.serverAddress);
-        if (this.serverPort != null) object.add("serverPort", this.serverPort);
         if (this.targetVersion != null) object.add("targetVersion", this.targetVersion.getOriginalVersion());
         if (this.account != null) object.add("account", this.account.toJson());
         byte[] key = UUIDUtils.toBytes(this.uuid);

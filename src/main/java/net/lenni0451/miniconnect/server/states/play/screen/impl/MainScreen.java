@@ -53,8 +53,7 @@ public class MainScreen extends Screen {
         itemList.set(11, item(Items.NAMETAG).named(new StringComponent(Messages.MainScreen.SetServerAddress.ItemName)).setGlint(hasAddress).calculate(builder -> {
             builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLore));
             if (hasAddress) {
-                String address = playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort));
-                builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, address));
+                builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, playerConfig.serverAddress));
             } else {
                 builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreNoAddressSet));
             }
@@ -70,11 +69,15 @@ public class MainScreen extends Screen {
                     }
                 } else {
                     try {
-                        HostAndPort hostAndPort = HostAndPort.fromString(s);
-                        if (hostAndPort.getHost().isBlank()) throw new IllegalArgumentException();
-                        if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new IllegalArgumentException();
-                        playerConfig.serverAddress = hostAndPort.getHost();
-                        playerConfig.serverPort = hostAndPort.getPortOrDefault(-1);
+                        try {
+                            HostAndPort hostAndPort = HostAndPort.fromString(s);
+                            if (hostAndPort.getHost().isBlank()) throw new InvalidAddressException();
+                            if (InetUtils.isLocal(InetAddress.getByName(hostAndPort.getHost()))) throw new InvalidAddressException();
+                        } catch (InvalidAddressException e) {
+                            throw e;
+                        } catch (Throwable ignored) {
+                        }
+                        playerConfig.serverAddress = s;
                         if (GeyserAPI.isGeyserPlayer(playerConfig.uuid)) {
                             //Respawn the player two times to force the chat to close
                             //This only needs to be done because bedrock doesn't allow closing the chat otherwise
@@ -156,7 +159,7 @@ public class MainScreen extends Screen {
                 builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreMissingRequirements));
                 return;
             }
-            builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, playerConfig.serverAddress + (playerConfig.serverPort == null || playerConfig.serverPort == -1 ? "" : (":" + playerConfig.serverPort))));
+            builder.lore(Messages.format(Messages.MainScreen.SetServerAddress.ItemLoreAddressSet, playerConfig.serverAddress));
             builder.lore(Messages.format(Messages.MainScreen.SetProtocolVersion.ItemLoreVersionSet, playerConfig.targetVersion.getName()));
             if (hasAccount) builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreLoggedIn, playerConfig.account.getDisplayString()));
         }).get(), () -> {
@@ -233,6 +236,10 @@ public class MainScreen extends Screen {
     public void close(ScreenHandler screenHandler) {
         //Count closing the screen as a disconnect
         screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.Disconnect.DisconnectMessage)));
+    }
+
+
+    private static class InvalidAddressException extends RuntimeException {
     }
 
 }

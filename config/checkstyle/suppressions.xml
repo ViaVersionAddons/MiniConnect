@@ -5,4 +5,5 @@
 
 <suppressions>
     <suppress files="Tutorial\.java" checks="Regexp"/>
+    <suppress files="Messages\.java" checks="Regexp"/>
 </suppressions>

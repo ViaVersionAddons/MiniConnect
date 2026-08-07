@@ -14,7 +14,7 @@ import java.util.function.Predicate;
  */
 public class GeyserAPI {
 
-    private static final Predicate<UUID> isBedrockPlayer;
+    private static final Predicate<UUID> IS_BEDROCK_PLAYER;
 
     static {
         Predicate<UUID> tempIsBedrockPlayer = uuid -> false;
@@ -31,11 +31,11 @@ public class GeyserAPI {
                 Logger.LOGGER.error("Failed to initialize Geyser-ViaProxy support", t);
             }
         }
-        isBedrockPlayer = tempIsBedrockPlayer;
+        IS_BEDROCK_PLAYER = tempIsBedrockPlayer;
     }
 
     public static boolean isGeyserPlayer(final UUID uuid) {
-        return isBedrockPlayer.test(uuid);
+        return IS_BEDROCK_PLAYER.test(uuid);
     }
 
 }

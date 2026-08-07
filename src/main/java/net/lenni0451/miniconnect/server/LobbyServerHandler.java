@@ -47,7 +47,7 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
         this.playerConfig.handshakePort = handshakeData.port();
         this.playerConfig.clientVersion = handshakeData.clientVersion();
         if (previousConnectionInfo == null) {
-            //Only check the handshake address if it's the initial connection and not a /disconnect reconnect
+            // Only check the handshake address if it's the initial connection and not a /disconnect reconnect
             this.checkHandshakeAddress();
         }
     }
@@ -81,10 +81,10 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
-//        PacketRegistry registry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
-//        int packetId = registry.getPacketId(packet);
-//        MCPackets packetType = MCPackets.getPacket(registry.getConnectionState(), PacketDirection.SERVERBOUND, ProtocolConstants.PROTOCOL_VERSION.getVersion(), packetId);
-//        System.out.println(packetType);
+        // PacketRegistry registry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+        // int packetId = registry.getPacketId(packet);
+        // MCPackets packetType = MCPackets.getPacket(registry.getConnectionState(), PacketDirection.SERVERBOUND, ProtocolConstants.PROTOCOL_VERSION.getVersion(), packetId);
+        // System.out.println(packetType);
         this.handler.handle(packet);
     }
 

@@ -9,6 +9,7 @@ import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.handler.codec.haproxy.*;
 import net.lenni0451.miniconnect.model.HandshakeData;
 
+import javax.annotation.Nullable;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +27,9 @@ public class HAProxyUtil {
             String sourceAddressString = sourceAddress.getAddress().getHostAddress();
             String targetAddressString;
             if (protocol.addressFamily().equals(HAProxyProxiedProtocol.AddressFamily.AF_IPv4)) {
-                targetAddressString = getInetAddress(targetAddress.getHostString(), Inet4Address.class).getHostAddress();
+                targetAddressString = getHostAddress(targetAddress.getHostString(), Inet4Address.class);
             } else {
-                targetAddressString = getInetAddress(targetAddress.getHostString(), Inet6Address.class).getHostAddress();
+                targetAddressString = getHostAddress(targetAddress.getHostString(), Inet6Address.class);
             }
 
             return new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, protocol, sourceAddressString, targetAddressString, sourceAddress.getPort(), targetAddress.getPort(), tlvs);
@@ -39,18 +40,19 @@ public class HAProxyUtil {
         }
     }
 
-    private static <T extends InetAddress> T getInetAddress(final String host, final Class<T> addressClass) {
+    @Nullable
+    private static String getHostAddress(final String host, final Class<? extends InetAddress> addressClass) {
         try {
             InetAddress[] addresses = InetAddress.getAllByName(host);
             for (InetAddress addr : addresses) {
                 if (addressClass.isInstance(addr)) {
-                    return (T) addr;
+                    return addr.getHostAddress();
                 }
             }
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return host;
     }
 
 }

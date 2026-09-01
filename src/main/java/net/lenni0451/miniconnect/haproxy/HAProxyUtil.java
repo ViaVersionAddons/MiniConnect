@@ -9,8 +9,8 @@ import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.handler.codec.haproxy.*;
 import net.lenni0451.miniconnect.model.HandshakeData;
 
-import javax.annotation.Nullable;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,34 +25,16 @@ public class HAProxyUtil {
         if (sourceChannel.remoteAddress() instanceof InetSocketAddress sourceAddress && targetChannel.remoteAddress() instanceof InetSocketAddress targetAddress) {
             HAProxyProxiedProtocol protocol = sourceAddress.getAddress() instanceof Inet4Address ? HAProxyProxiedProtocol.TCP4 : HAProxyProxiedProtocol.TCP6;
             String sourceAddressString = sourceAddress.getAddress().getHostAddress();
-            String targetAddressString;
-            if (protocol.addressFamily().equals(HAProxyProxiedProtocol.AddressFamily.AF_IPv4)) {
-                targetAddressString = getHostAddress(targetAddress.getHostString(), Inet4Address.class);
-            } else {
-                targetAddressString = getHostAddress(targetAddress.getHostString(), Inet6Address.class);
-            }
 
-            return new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, protocol, sourceAddressString, targetAddressString, sourceAddress.getPort(), targetAddress.getPort(), tlvs);
+            // The target address is set to the source address to prevent issues with IPv4 and IPv6 mismatches
+            // Haproxy requires both addresses to be of the same type, which we can't guarantee here
+            // The target address is never used, so it's safe to set it to the source address and prevent issues
+            return new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, protocol, sourceAddressString, sourceAddressString, sourceAddress.getPort(), targetAddress.getPort(), tlvs);
         } else if (targetChannel.remoteAddress() instanceof DomainSocketAddress targetAddress) {
             return new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, HAProxyProxiedProtocol.UNIX_STREAM, "", targetAddress.path(), 0, 0, tlvs);
         } else {
             throw new IllegalArgumentException("Unsupported address type: " + targetChannel.remoteAddress().getClass().getName());
         }
-    }
-
-    @Nullable
-    private static String getHostAddress(final String host, final Class<? extends InetAddress> addressClass) {
-        try {
-            InetAddress[] addresses = InetAddress.getAllByName(host);
-            for (InetAddress addr : addresses) {
-                if (addressClass.isInstance(addr)) {
-                    return addr.getHostAddress();
-                }
-            }
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-        return host;
     }
 
 }

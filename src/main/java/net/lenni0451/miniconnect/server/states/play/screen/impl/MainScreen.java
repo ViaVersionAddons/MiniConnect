@@ -13,6 +13,7 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.lenni0451.mcstructs.text.TextComponent;
 import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.mcstructs.text.events.click.types.OpenUrlClickEvent;
+import net.lenni0451.miniconnect.Config;
 import net.lenni0451.miniconnect.Main;
 import net.lenni0451.miniconnect.server.model.PlayerConfig;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
@@ -111,46 +112,48 @@ public class MainScreen extends Screen {
         }).get(), () -> {
             screenHandler.openScreen(new VersionSelectorScreen(0));
         });
-        itemList.set(13, item(Items.TRIAL_KEY).named(new StringComponent(Messages.MainScreen.Login.ItemName)).setGlint(hasAccount).calculate(builder -> {
-            builder.lore(Messages.format(Messages.MainScreen.Login.ItemLore));
-            if (hasAccount) {
-                builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreLoggedIn, playerConfig.account.getDisplayString()));
-            } else {
-                builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreNotLoggedIn));
-            }
-        }).get(), () -> {
-            screenHandler.closeScreen();
-            for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoading)) {
-                screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
-            }
-            PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
-                try {
-                    playerConfig.account = new MicrosoftAccount(JavaAuthManager.create(MinecraftAuth.createHttpClient()).login(DeviceCodeMsaAuthService::new, (Consumer<MsaDeviceCode>) code -> {
-                        for (TextComponent component : Messages.format(
-                                Messages.MainScreen.Login.ChatCodeLogin,
-                                new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))),
-                                code.getUserCode()
-                        )) {
+        if (Config.EnableAccountLogin) {
+            itemList.set(13, item(Items.TRIAL_KEY).named(new StringComponent(Messages.MainScreen.Login.ItemName)).setGlint(hasAccount).calculate(builder -> {
+                builder.lore(Messages.format(Messages.MainScreen.Login.ItemLore));
+                if (hasAccount) {
+                    builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreLoggedIn, playerConfig.account.getDisplayString()));
+                } else {
+                    builder.lore(Messages.format(Messages.MainScreen.Login.ItemLoreNotLoggedIn));
+                }
+            }).get(), () -> {
+                screenHandler.closeScreen();
+                for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoading)) {
+                    screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                }
+                PlatformTask<?> task = Via.getPlatform().runAsync(() -> {
+                    try {
+                        playerConfig.account = new MicrosoftAccount(JavaAuthManager.create(MinecraftAuth.createHttpClient()).login(DeviceCodeMsaAuthService::new, (Consumer<MsaDeviceCode>) code -> {
+                            for (TextComponent component : Messages.format(
+                                    Messages.MainScreen.Login.ChatCodeLogin,
+                                    new StringComponent(code.getDirectVerificationUri()).styled(style -> style.setClickEvent(new OpenUrlClickEvent(code.getDirectVerificationUri()))),
+                                    code.getUserCode()
+                            )) {
+                                screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                            }
+                        }));
+                        for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginSuccess)) {
                             screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
                         }
-                    }));
-                    for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginSuccess)) {
-                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                    } catch (InterruptedException e) {
+                        return;
+                    } catch (Throwable t) {
+                        if (!(t instanceof TimeoutException)) {
+                            t.printStackTrace();
+                        }
+                        for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginFailed, t.getMessage())) {
+                            screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
+                        }
                     }
-                } catch (InterruptedException e) {
-                    return;
-                } catch (Throwable t) {
-                    if (!(t instanceof TimeoutException)) {
-                        t.printStackTrace();
-                    }
-                    for (TextComponent component : Messages.format(Messages.MainScreen.Login.ChatLoginFailed, t.getMessage())) {
-                        screenHandler.getStateHandler().send(new S2CSystemChatPacket(component, false));
-                    }
-                }
-                screenHandler.openScreen(this);
+                    screenHandler.openScreen(this);
+                });
+                screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
             });
-            screenHandler.getStateHandler().getChannel().closeFuture().addListener(future -> task.cancel());
-        });
+        }
         itemList.set(15, item(Items.OAK_DOOR).named(new StringComponent(Messages.MainScreen.ConnectToServer.ItemName)).setGlint(hasAddress && hasVersion).calculate(builder -> {
             builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLore));
             if (!hasAddress) builder.lore(Messages.format(Messages.MainScreen.ConnectToServer.ItemLoreNoAddress));
@@ -181,23 +184,25 @@ public class MainScreen extends Screen {
                 }
             }
         });
-        itemList.set(20, item(Items.ENDER_CHEST).setGlint(playerConfig.isSaved).calculate(builder -> {
-            if (playerConfig.isSaved) {
-                builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameEnabled));
-                builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreEnabled));
-            } else {
-                builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameDisabled));
-                builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreDisabled));
-            }
-        }).get(), () -> {
-            if (playerConfig.isSaved) {
-                playerConfig.delete();
-                screenHandler.openScreen(new MainScreen());
-            } else {
-                Main.getInstance().getStateRegistry().getVerificationQueue().add(playerConfig.uuid);
-                screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.ProxyOnlineMode.DisconnectMessage)));
-            }
-        });
+        if (Config.EnableProxyOnlineMode) {
+            itemList.set(20, item(Items.ENDER_CHEST).setGlint(playerConfig.isSaved).calculate(builder -> {
+                if (playerConfig.isSaved) {
+                    builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameEnabled));
+                    builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreEnabled));
+                } else {
+                    builder.named(new StringComponent(Messages.MainScreen.ProxyOnlineMode.ItemNameDisabled));
+                    builder.lore(Messages.format(Messages.MainScreen.ProxyOnlineMode.ItemLoreDisabled));
+                }
+            }).get(), () -> {
+                if (playerConfig.isSaved) {
+                    playerConfig.delete();
+                    screenHandler.openScreen(new MainScreen());
+                } else {
+                    Main.getInstance().getStateRegistry().getVerificationQueue().add(playerConfig.uuid);
+                    screenHandler.getStateHandler().sendAndClose(new S2CPlayDisconnectPacket(new StringComponent(Messages.MainScreen.ProxyOnlineMode.DisconnectMessage)));
+                }
+            });
+        }
 
         itemList.set(27, item(Items.BOOK).named(new StringComponent(Messages.MainScreen.HowToUse.ItemName)).get(), () -> {
             if (playerConfig.clientVersion.newerThanOrEqualTo(ProtocolVersion.v1_19)) {

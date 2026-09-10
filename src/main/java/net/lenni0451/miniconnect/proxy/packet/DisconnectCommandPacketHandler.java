@@ -1,5 +1,7 @@
 package net.lenni0451.miniconnect.proxy.packet;
 
+import com.viaversion.viabackwards.protocol.v1_20_5to1_20_3.provider.TransferProvider;
+import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -60,7 +62,12 @@ public class DisconnectCommandPacketHandler extends PacketHandler {
             return;
         }
         Main.getInstance().getStateRegistry().getLobbyTargets().put(ChannelUtils.getChannelAddress(this.proxyConnection.getC2P()), connectionInfo);
-        this.proxyConnection.getC2P().writeAndFlush(new S2CPlayTransferPacket(connectionInfo.handshakeAddress(), connectionInfo.handshakePort()));
+        if (this.proxyConnection.getClientVersion().newerThanOrEqualTo(ProtocolVersion.v1_20_5)) {
+            this.proxyConnection.getC2P().writeAndFlush(new S2CPlayTransferPacket(connectionInfo.handshakeAddress(), connectionInfo.handshakePort()));
+        } else {
+            TransferProvider transferProvider = Via.getManager().getProviders().get(TransferProvider.class);
+            transferProvider.connectToServer(this.proxyConnection.getUserConnection(), connectionInfo.handshakeAddress(), connectionInfo.handshakePort());
+        }
     }
 
 }

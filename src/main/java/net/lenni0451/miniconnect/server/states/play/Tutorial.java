@@ -5,6 +5,7 @@ import net.lenni0451.mcstructs.text.components.StringComponent;
 import net.lenni0451.mcstructs.text.stringformat.StringFormat;
 import net.lenni0451.mcstructs.text.stringformat.handling.ColorHandling;
 import net.lenni0451.mcstructs.text.stringformat.handling.DeserializerUnknownHandling;
+import net.lenni0451.miniconnect.Config;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.server.states.play.screen.Messages;
 import net.lenni0451.miniconnect.utils.ViaUtils;
@@ -19,8 +20,8 @@ public class Tutorial {
             Messages.Tutorial.Introduction,
             Messages.Tutorial.ServerAddress,
             Messages.Tutorial.ServerVersion,
-            Messages.Tutorial.Login,
-            Messages.Tutorial.ProxyOnlineMode,
+            Config.EnableAccountLogin ? Messages.Tutorial.Login : null,
+            Config.EnableProxyOnlineMode ? Messages.Tutorial.ProxyOnlineMode : null,
             Messages.Tutorial.Connect,
             Messages.Tutorial.Disconnect,
             Messages.Tutorial.WildcardDomains
@@ -29,6 +30,7 @@ public class Tutorial {
     private static FilterableComponent[] buildTutorial(final String... pages) {
         List<FilterableComponent> components = new ArrayList<>();
         for (String page : pages) {
+            if (page == null) continue;
             String[] lines = page.trim().split("\n");
             StringComponent base = new StringComponent();
             for (int i = 0; i < lines.length; i++) {

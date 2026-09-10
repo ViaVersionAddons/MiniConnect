@@ -8,6 +8,7 @@ import net.lenni0451.miniconnect.model.ConnectionInfo;
 import net.lenni0451.miniconnect.proxy.StateRegistry;
 import net.lenni0451.miniconnect.server.protocol.ProtocolConstants;
 import net.lenni0451.miniconnect.utils.ChannelUtils;
+import net.raphimc.netminecraft.constants.IntendedState;
 import net.raphimc.viaproxy.ViaProxy;
 import net.raphimc.viaproxy.plugins.events.ConnectEvent;
 import net.raphimc.viaproxy.plugins.events.PreConnectEvent;
@@ -31,14 +32,15 @@ public class RedirectionHandler {
         StateRegistry stateRegistry = Main.getInstance().getStateRegistry();
         InetAddress channelAddress = ChannelUtils.getChannelAddress(event.getClientChannel());
 
-        if (stateRegistry.getConnectionTargets().containsKey(channelAddress)) {
+        boolean shouldRedirect = event.getIntendedState().equals(IntendedState.LOGIN) || event.getIntendedState().equals(IntendedState.TRANSFER);
+        if (stateRegistry.getConnectionTargets().containsKey(channelAddress) && shouldRedirect) {
             //First transfer from the lobby to the target server
             //Set the target server address and version for the player to connect
             ConnectionInfo target = stateRegistry.getConnectionTargets().remove(channelAddress);
             event.setServerAddress(AddressUtil.parse(target.address(), target.protocolVersion()));
             event.setServerVersion(target.protocolVersion());
             event.getClientChannel().attr(AttributeKeys.CONNECTION_INFO).set(target);
-        } else if (stateRegistry.getReconnectTargets().containsKey(channelAddress) && !event.getServerAddress().equals(DUMMY_SOCKET_ADDRESS)) {
+        } else if (stateRegistry.getReconnectTargets().containsKey(channelAddress) && !event.getServerAddress().equals(DUMMY_SOCKET_ADDRESS) && shouldRedirect) {
             //Subsequent transfers after the first initial transfer
             //Only set the target server version since ViaProxy already knows the correct target address
             ConnectionInfo target = Main.getInstance().getStateRegistry().getReconnectTargets().remove(ChannelUtils.getChannelAddress(event.getClientChannel()));

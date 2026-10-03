@@ -25,17 +25,20 @@ public class HAProxyEnableHandler {
 
     @EventHandler
     public void onProxy2ServerChannelInitialize(final Proxy2ServerChannelInitializeEvent event) {
-        if (!event.getType().equals(ITyped.Type.POST)) return;
         ProxyConnection proxyConnection = ProxyConnection.fromChannel(event.getChannel());
         if (!proxyConnection.getC2P().hasAttr(AttributeKeys.ENABLE_HAPROXY)) return;
-        event.getChannel().pipeline().addFirst("miniconnect-", new ChannelInboundHandlerAdapter() {
-            @Override
-            public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                super.channelActive(ctx);
-                ctx.writeAndFlush(HAProxyUtil.createMessage(proxyConnection.getC2P(), ctx.channel(), proxyConnection.getClientHandshakeAddress(), proxyConnection.getClientVersion())).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-            }
-        });
-        event.getChannel().pipeline().addFirst(VIAPROXY_HAPROXY_ENCODER_NAME, HAProxyMessageEncoder.INSTANCE);
+        if (event.getType().equals(ITyped.Type.POST)) {
+            event.getChannel().pipeline().addFirst("miniconnect-", new ChannelInboundHandlerAdapter() {
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    super.channelActive(ctx);
+                    ctx.writeAndFlush(HAProxyUtil.createMessage(proxyConnection.getC2P(), ctx.channel(), proxyConnection.getClientHandshakeAddress(), proxyConnection.getClientVersion())).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+                }
+            });
+            event.getChannel().pipeline().addFirst(VIAPROXY_HAPROXY_ENCODER_NAME, HAProxyMessageEncoder.INSTANCE);
+        } else {
+            event.getChannel().attr(AttributeKeys.SKIP_BACKEND_PROXY).set(true);
+        }
     }
 
 }

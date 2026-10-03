@@ -19,7 +19,14 @@ Download the latest release from the [releases page](https://github.com/ViaVersi
 > After installing the plugin, ViaProxy will no longer function as a normal proxy server! The plugin will also change some config options of ViaProxy to make it work properly.\
 > This can always be reverted by removing the plugin from the `plugins` folder and changing the config options back to their original values.
 
-The plugin itself does not have any configuration options.
+MiniConnect itself also has some options in the `plugins/MiniConnect/config.yml` file:
+| Option                     | Description                                                                   | Default |
+| -------------------------- | ----------------------------------------------------------------------------- | ------- |
+| `enable-account-login`     | Allow users to login with their Minecraft account to join online mode servers | `true`  |
+| `enable-proxy-online-mode` | Allow users to enable online mode for their account                           | `true`  |
+
+In the `plugins/MiniConnect/messages.yml` file are all messages from the MiniConnect config GUI.
+You can freely change them, but make sure to keep placeholders intact (e.g. `{1}`, `{2}`, ...).
 
 ## Usage
 After joining the server, a GUI with settings will open:\

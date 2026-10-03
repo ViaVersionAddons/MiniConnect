@@ -24,7 +24,7 @@ public class PlayStateHandler extends StateHandler {
     }
 
     private void init() {
-        this.send(new S2CLoginPacket(0, false, 1, 1, 1, false, false, false, ProtocolConstants.DEFAULT_SPAWN_INFO, false));
+        this.send(new S2CLoginPacket(1, false, 1, 1, 1, false, false, false, ProtocolConstants.DEFAULT_SPAWN_INFO, false));
         ProtocolConstants.sendSpawnInfo(this);
 
         this.screenHandler = new ScreenHandler(this);

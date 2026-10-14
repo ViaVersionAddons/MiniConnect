@@ -101,14 +101,22 @@ public class LobbyServerHandler extends SimpleChannelInboundHandler<Packet> {
             WildcardDomainParser.ParsedDomain parsedDomain = WildcardDomainParser.parseFormat2(handshakeAddress);
             if (parsedDomain != null && parsedDomain.version() != null) {
                 InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
-                this.playerConfig.serverAddress = socketAddress.getHostString();
+                if (socketAddress.getPort() == 25565) {
+                    this.playerConfig.serverAddress = socketAddress.getHostString();
+                } else {
+                    this.playerConfig.serverAddress = socketAddress.getHostString() + ":" + socketAddress.getPort();
+                }
                 this.playerConfig.targetVersion = parsedDomain.version();
             }
         } else if (handshakeAddress.toLowerCase().contains("viaproxy.")) { // Format 1: address_port_version.viaproxy.hostname
             WildcardDomainParser.ParsedDomain parsedDomain = WildcardDomainParser.parseFormat1(handshakeAddress);
             if (parsedDomain != null && parsedDomain.version() != null) {
                 InetSocketAddress socketAddress = (InetSocketAddress) parsedDomain.address();
-                this.playerConfig.serverAddress = socketAddress.getHostString();
+                if (socketAddress.getPort() == 25565) {
+                    this.playerConfig.serverAddress = socketAddress.getHostString();
+                } else {
+                    this.playerConfig.serverAddress = socketAddress.getHostString() + ":" + socketAddress.getPort();
+                }
                 this.playerConfig.targetVersion = parsedDomain.version();
             }
         }
